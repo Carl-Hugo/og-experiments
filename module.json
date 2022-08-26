@@ -1,0 +1,37 @@
+{
+    "v10-id": "og-experiments",
+    "name": "og-experiments",
+    "title": "Og Experiments",
+    "description": "Some local experiments.",
+    "version": "0.0.1",
+    "templateVersion": 2,
+    "minimumCoreVersion": "9",
+    "compatibleCoreVersion": "9",
+    "compatibility": {
+        "minimum": 10,
+        "verified": 9
+    },
+    "authors": [
+        {
+            "name": "Carl-Hugo Marcotte",
+            "url": "https://www.carl-hugo.ca/",
+            "discord": "Ogulrok#7770"
+        }
+    ],
+    "x-styles": ["css/star-wars.css"],
+    "esmodules": ["./index.js"],
+    "x-languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "socket": true,
+    "packs": [],
+    "x-url": "https://github.com/for-the-new-order/storyteller-star-wars-theme",
+    "x-download": "https://github.com/for-the-new-order/storyteller-star-wars-theme/releases/latest/download/module.zip",
+    "x-manifest": "https://github.com/for-the-new-order/storyteller-star-wars-theme/releases/latest/download/module.json",
+    "x-readme": "https://raw.githubusercontent.com/for-the-new-order/storyteller-star-wars-theme/main/README.md",
+    "x-license": "https://raw.githubusercontent.com/for-the-new-order/storyteller-star-wars-theme/main/LICENSE"
+}

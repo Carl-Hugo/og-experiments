@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "strict": true,
+        "moduleResolution": "node",
+        "types": ["@league-of-foundry-developers/foundry-vtt-types"],
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": ["**/*.ts"]
+}
