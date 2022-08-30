@@ -75,7 +75,8 @@ export class ServerPush implements IOgModule {
             {
                 name: options.name,
                 content: options.content,
-                permission: foundry.CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+                // permission: foundry.CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+                permissions: foundry.CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
             },
             { temporary: true, renderSheet: true }
         );
@@ -85,7 +86,7 @@ export class ServerPush implements IOgModule {
         }
         console.log(`Journal entry '${options.name}' created.`);
         // await entry.show('text', true);
-        await entry.sheet.render(true);
+        await entry.sheet?.render(true);
     }
 
     async createShowAndDeleteNewJournalEntry(options: ICreateShowAndDeleteNewJournalEntry): Promise<void> {
