@@ -1,14 +1,29 @@
 {
-  "name": "og-experiments",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Carl-Hugo Marcotte",
-  "license": "MIT",
-  "devDependencies": {
-    "@league-of-foundry-developers/foundry-vtt-types": "^9.269.1"
-  }
+    "name": "og-experiments",
+    "version": "0.0.1",
+    "description": "",
+    "private": true,
+    "main": "index.js",
+    "scripts": {
+        "build": "webpack --mode=development --watch",
+        "release": "webpack --mode=production",
+        "publish": "npm run release"
+    },
+    "author": "Carl-Hugo Marcotte",
+    "license": "MIT",
+    "devDependencies": {
+        "@league-of-foundry-developers/foundry-vtt-types": "^9.269.1",
+        "clean-webpack-plugin": "4.0.0",
+        "css-loader": "6.7.1",
+        "html-webpack-plugin": "5.5.0",
+        "mini-css-extract-plugin": "2.6.1",
+        "ts-loader": "9.3.1",
+        "typescript": "4.8.2",
+        "webpack": "5.74.0",
+        "webpack-cli": "4.10.0"
+    },
+    "dependencies": {
+        "@microsoft/signalr": "^6.0.8",
+        "@types/node": "^18.7.14"
+    }
 }

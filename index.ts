@@ -1,13 +1,13 @@
-import { logText } from './src/utils.js';
-import { VehicleMovement } from './src/movement.js';
+import { logText } from './src/utils';
+// import { VehicleMovement } from './src/movement.js';
+import { ServerPush } from './src/server-push';
+import { IOgModule } from './src/IModule';
 
-const modules = [new VehicleMovement()];
+const modules = [/*new VehicleMovement(),*/ new ServerPush()] as IOgModule[];
 
 Hooks.once('init', async function () {
     logText('initiating');
-    game.og = {
-        functions: {},
-    };
+    // game.experiments = {};
     for (let index = 0; index < modules.length; index++) {
         const module = modules[index];
         if (module.init) {

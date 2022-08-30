@@ -36,18 +36,28 @@ async function animateVehicleEntry(tokenID, targetPosition, soundSrc, waitTimeBe
     }, timeout);
 }
 
-// await game.og.functions.animateVehicleEntry(tokenID, { x: 1600, y: 1200 }, 'worlds/star-wars-eote/sounds/Landing Speeder Truck.mp3', 1000);
-// await game.og.functions.animateVehicleEntry(tokenID, { x: 1950, y: 1000 }, 'worlds/star-wars-eote/sounds/Landing Speeder Truck.mp3', 1000);
+// await game.experiments.animateVehicleEntry(tokenID, { x: 1600, y: 1200 }, 'worlds/star-wars-eote/sounds/Landing Speeder Truck.mp3', 1000);
+// await game.experiments.animateVehicleEntry(tokenID, { x: 1950, y: 1000 }, 'worlds/star-wars-eote/sounds/Landing Speeder Truck.mp3', 1000);
 
 //Falcon landing.mp3
 //Landing Speeder Truck.mp3
+
+async function open() {
+    const myContent = await renderTemplate('modules/og-experiments/templates/my-dialog.hbs');
+    new Dialog({
+        title: 'My Dialog',
+        content: myContent,
+        buttons: {},
+    }).render(true);
+}
 
 export class VehicleMovement {
     init() {
         logText('VehicleMovement initiating');
         Hooks.on('hoverToken', logTokenPosition);
         Hooks.on('controlToken', logTokenPosition);
-        game.og.functions.animateVehicleEntry = animateVehicleEntry;
+        game.experiments.animateVehicleEntry = animateVehicleEntry;
+        game.experiments.open = open;
         logText('VehicleMovement initiated');
     }
 }

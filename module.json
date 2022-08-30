@@ -19,7 +19,7 @@
         }
     ],
     "x-styles": ["css/star-wars.css"],
-    "esmodules": ["./index.js"],
+    "esmodules": ["./dist/index.js"],
     "x-languages": [
         {
             "lang": "en",
