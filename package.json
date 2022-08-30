@@ -5,7 +5,8 @@
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "build": "webpack --mode=development --watch",
+        "build": "webpack --mode=development",
+        "watch": "webpack --mode=development --watch",
         "release": "webpack --mode=production",
         "publish": "npm run release"
     },
