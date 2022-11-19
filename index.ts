@@ -5,7 +5,7 @@ import { IOgModule } from './src/IModule';
 import { SceneUtils } from './src/scene-utils';
 import { extensions } from './src/GameExtensions';
 
-const modules = [/*new VehicleMovement(),*/ new SceneUtils(), new ServerPush()] as IOgModule[];
+const modules = [/*new VehicleMovement(),*/ new SceneUtils() /*, new ServerPush()*/] as IOgModule[];
 
 Hooks.once('init', async function () {
     logText('initiating');

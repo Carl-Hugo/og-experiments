@@ -1,3 +1,3 @@
-export function logText(text: string) {
-    console.debug('og-experiments | ' + text);
+export function logText(...data: any[]) {
+    console.debug('og-experiments |', ...data);
 }
