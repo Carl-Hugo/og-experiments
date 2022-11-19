@@ -30,3 +30,17 @@ Hooks.once('ready', async function () {
     }
     logText('ready');
 });
+
+if (process.env.NODE_ENV === 'development') {
+    if ((module as any).hot) {
+        (module as any).hot.accept();
+
+        if ((module as any).hot.status() === 'apply') {
+            for (const template in _templateCache) {
+                if (Object.prototype.hasOwnProperty.call(_templateCache, template)) {
+                    delete _templateCache[template];
+                }
+            }
+        }
+    }
+}
