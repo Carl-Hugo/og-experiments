@@ -1,11 +1,12 @@
-// import { logText } from './utils.js';
 // const signalR = require('@microsoft/signalr');
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { IOgModule } from './IModule';
+import Keycloak, { KeycloakAdapter } from 'keycloak-js';
+import { logText } from './utils';
 
-function logText(text: string) {
-    console.log('og-experiments | ' + text);
-}
+// function logText(text: string) {
+//     console.debug('og-experiments | ' + text);
+// }
 
 // var noteByIndex = game.journal._source[16]
 // var journalEntryId = 'zEttYl2LliDg1W7O'; // "U3BmDb23GUxnMP9M"
@@ -17,12 +18,67 @@ await game.experiments.showJournalEntryById(journalEntryId);
 // noteById.show();
 //
 //new JournalEntry(note).show()
+class AuthService {
+    private _keycloak: Keycloak;
+
+    constructor() {
+        this._keycloak = new Keycloak({
+            url: 'http://localhost:8080/',
+            realm: 'OgAuth',
+            clientId: 'og-server',
+        });
+    }
+
+    private _token?: string;
+    public get token(): string | undefined {
+        return this._token;
+    }
+    public set token(v: string | undefined) {
+        this._token = v;
+    }
+
+    private _authenticated: boolean = false;
+    public get authenticated(): boolean {
+        return this._authenticated;
+    }
+    public set authenticated(v: boolean) {
+        this._authenticated = v;
+    }
+
+    async init() {
+        var me = this;
+        await this._keycloak
+            .init({ onLoad: 'check-sso' }) // check-sso | login-required // silentCheckSsoRedirectUri: 'https://localhost:7263/'
+            .then(function (authenticated) {
+                console.warn(authenticated ? 'authenticated' : 'not authenticated');
+                me.authenticated = authenticated;
+                if (authenticated) {
+                    me.token = me._keycloak.token;
+                }
+            })
+            .catch(function (e) {
+                console.error('failed to initialize', e);
+            });
+    }
+}
 
 export class ServerPush implements IOgModule {
-    ready(): void {
+    private auth = new AuthService();
+
+    async ready(): Promise<void> {
         logText('ServerPush getting ready');
 
-        let connection = new HubConnectionBuilder().withUrl('https://localhost:7263/journal-entry').build();
+        await this.auth.init();
+        if (!this.auth.authenticated) {
+            console.error("Not authenticated! Can't proceed with ServerPush.ready.");
+            return;
+        }
+
+        let connection = new HubConnectionBuilder()
+            .withUrl('https://localhost:7263/journal-entry', {
+                accessTokenFactory: () => this.auth.token!,
+            })
+            .build();
 
         connection.on('pong', () => {
             logText('pong');
@@ -35,7 +91,7 @@ export class ServerPush implements IOgModule {
 
         logText('ServerPush is ready');
     }
-    init(): void {
+    async init(): Promise<void> {
         logText('ServerPush initiating');
         // Javascript
         // game.experiments.showJournalEntryById = async function (journalEntryId) {
@@ -49,18 +105,18 @@ export class ServerPush implements IOgModule {
         //         name: name,
         //         content: content,
         //     });
-        //     console.log(`Journal entry '${name}' created with isPermanent = ${isPermanent}.`);
+        //     logText(`Journal entry '${name}' created with isPermanent = ${isPermanent}.`);
         //     await entry.show('text', true);
 
         //     if (isPermanent) {
         //         return;
         //     }
         //     const deleteEntryInMS = deleteDelay || 60000;
-        //     console.log(`Scheduling journal entry deletion in ${deleteEntryInMS} ms.`);
+        //     logText(`Scheduling journal entry deletion in ${deleteEntryInMS} ms.`);
         //     setTimeout(async () => {
-        //         console.log('Deleting journal entry', entry);
+        //         logText('Deleting journal entry', entry);
         //         await entry.delete();
-        //         console.log('Journal entry deleted');
+        //         logText('Journal entry deleted');
         //     }, deleteEntryInMS);
 
         //     // V10 multi-page syntax
@@ -84,7 +140,7 @@ export class ServerPush implements IOgModule {
             console.error('No entry was created.');
             return;
         }
-        console.log(`Journal entry '${options.name}' created.`);
+        logText(`Journal entry '${options.name}' created.`);
         // await entry.show('text', true);
         await entry.sheet?.render(true);
     }
@@ -98,18 +154,18 @@ export class ServerPush implements IOgModule {
             console.error('No entry was created.');
             return;
         }
-        console.log(`Journal entry '${options.name}' created with isPermanent = ${options.isPermanent}.`);
+        logText(`Journal entry '${options.name}' created with isPermanent = ${options.isPermanent}.`);
         await entry.show('text', true);
 
         if (options.isPermanent) {
             return;
         }
         const deleteEntryInMS = options.deleteDelay || 60000;
-        console.log(`Scheduling journal entry deletion in ${deleteEntryInMS} ms.`);
+        logText(`Scheduling journal entry deletion in ${deleteEntryInMS} ms.`);
         setTimeout(async () => {
-            console.log('Deleting journal entry', entry);
+            console.debug('Deleting journal entry', entry);
             await entry.delete();
-            console.log('Journal entry deleted');
+            logText('Journal entry deleted');
         }, deleteEntryInMS);
 
         // V10 multi-page syntax
