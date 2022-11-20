@@ -2,21 +2,17 @@ import { extensions } from './GameExtensions';
 import { IOgModule } from './IModule';
 import { logText } from './utils';
 
-export class SceneUtils implements IOgModule {
+export class ActivateScene implements IOgModule {
     init(): void {
-        logText('SceneUtils initiating');
+        logText('ActivateScene initiating');
 
-        (extensions as any).SceneUtils = {
+        extensions.flow = {
             activate: this.activate,
         };
 
-        // Inspired from https://github.com/claypooj21/journals-like-a-script
         (CONFIG as any).TextEditor.enrichers.push({
             pattern: /@ActivateScene\[([^\]]+)\](?:{([^}]+)})?/gm,
             enricher: (match: any[], options: any) => {
-                // logText(`match:`, match);
-                // logText(`options:`, options);
-
                 let [target, name] = match.slice(1, 3);
                 var scene = (game as Game).scenes!.get(target);
                 let broken = scene ? false : true;
@@ -51,19 +47,18 @@ export class SceneUtils implements IOgModule {
 
         document.addEventListener('click', async (e) => {
             var target = e.target as any;
-            logText('CLICK!', target.dataset.broken);
             if (target && target.dataset && target.dataset.type === 'ActivateScene' && target.dataset.broken === 'false') {
                 e.preventDefault();
                 await this.activate(target.dataset.id);
             }
         });
 
-        logText('SceneUtils initiated');
+        logText('ActivateScene initiated');
     }
     ready(): void {}
 
     async activate(targetSceneId: string) {
-        logText(`SceneUtils activating: ${targetSceneId}`);
+        logText(`ActivateScene activating: ${targetSceneId}`);
 
         const currentSceneJournal = (game as Game).scenes!.active!.journal;
         if (currentSceneJournal && currentSceneJournal.sheet) {
@@ -74,7 +69,14 @@ export class SceneUtils implements IOgModule {
         if (targetScene) {
             await targetScene.activate();
             if (targetScene.journal) {
-                await targetScene.journal.show();
+                // await targetScene.journal.show();
+                const journal = targetScene.journal;
+                if (journal.sheet) {
+                    if (!journal.testUserPermission((game as Game).user!, 'LIMITED')) {
+                        return ui.notifications!.warn(`You do not have permission to view this ${journal.documentName} sheet.`);
+                    }
+                    journal.sheet.render(true);
+                }
             }
         }
     }

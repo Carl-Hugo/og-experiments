@@ -3,13 +3,13 @@
     "name": "og-experiments",
     "title": "Og Experiments",
     "description": "Some local experiments.",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "templateVersion": 2,
-    "minimumCoreVersion": "9",
-    "compatibleCoreVersion": "9",
+    "minimumCoreVersion": "10",
+    "compatibleCoreVersion": "10",
     "compatibility": {
         "minimum": 10,
-        "verified": 9
+        "verified": 10
     },
     "authors": [
         {
@@ -18,7 +18,7 @@
             "discord": "Ogulrok#7770"
         }
     ],
-    "x-styles": ["css/star-wars.css"],
+    "styles": ["styles/module.css"],
     "esmodules": ["./dist/index.js"],
     "x-languages": [
         {
