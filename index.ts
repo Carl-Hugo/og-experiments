@@ -1,9 +1,8 @@
+import './styles/module.scss';
 import { logText } from './src/utils';
-// import { VehicleMovement } from './src/movement.js';
 import { ServerPush } from './src/server-push';
 import { IOgModule } from './src/IModule';
 import { ActivateScene } from './src/ActivateScene';
-// import { OgSettings } from './src/OgSettings';
 import { extensions } from './src/GameExtensions';
 import { OpenSceneNotes } from './src/OpenSceneNotes';
 
@@ -40,17 +39,3 @@ Hooks.once('ready', async function () {
     }
     logText('ready');
 });
-
-if (process.env.NODE_ENV === 'development') {
-    if ((module as any).hot) {
-        (module as any).hot.accept();
-
-        if ((module as any).hot.status() === 'apply') {
-            for (const template in _templateCache) {
-                if (Object.prototype.hasOwnProperty.call(_templateCache, template)) {
-                    delete _templateCache[template];
-                }
-            }
-        }
-    }
-}
