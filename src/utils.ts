@@ -1,6 +1,12 @@
 export function logText(...data: any[]) {
     console.debug('og-experiments |', ...data);
 }
+export function logWarn(...data: any[]) {
+    console.warn('og-experiments |', ...data);
+}
+export function logError(...data: any[]) {
+    console.error('og-experiments |', ...data);
+}
 
 function initializeOgExtensions() {
     (game as any)['og'] = {};
