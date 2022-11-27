@@ -3,14 +3,14 @@ import { logText } from './src/utils';
 import { ServerPush } from './src/server-push';
 import { IOgModule } from './src/IModule';
 import { ActivateScene } from './src/ActivateScene';
-// import { OgSettings } from './src/OgSettings';
 import { OpenSceneNotes } from './src/OpenSceneNotes';
+import { globalSettings } from './src/OgSettings';
 
 const modules = [
-    // extensions.settings,
     new ActivateScene(),
     new OpenSceneNotes(),
     new ServerPush(),
+    globalSettings,
     //new VehicleMovement()
 ] as IOgModule[];
 
