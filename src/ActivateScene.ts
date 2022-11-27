@@ -6,7 +6,7 @@ export class ActivateScene implements IOgModule {
         logText('ActivateScene initiating');
 
         addGameExtensions('flow', {
-            activate: this.activate,
+            activateScene,
         });
 
         (CONFIG as any).TextEditor.enrichers.push({
@@ -48,34 +48,34 @@ export class ActivateScene implements IOgModule {
             var target = e.target as any;
             if (target && target.dataset && target.dataset.type === 'ActivateScene' && target.dataset.broken === 'false') {
                 e.preventDefault();
-                await this.activate(target.dataset.id);
+                await activateScene(target.dataset.id);
             }
         });
 
         logText('ActivateScene initiated');
     }
     ready(): void {}
+}
 
-    async activate(targetSceneId: string) {
-        logText(`ActivateScene activating: ${targetSceneId}`);
+export async function activateScene(targetSceneId: string) {
+    logText(`ActivateScene activating: ${targetSceneId}`);
 
-        const currentSceneJournal = (game as Game).scenes!.active!.journal;
-        if (currentSceneJournal && currentSceneJournal.sheet) {
-            currentSceneJournal.sheet.close();
-        }
+    const currentSceneJournal = (game as Game).scenes!.active!.journal;
+    if (currentSceneJournal && currentSceneJournal.sheet) {
+        currentSceneJournal.sheet.close();
+    }
 
-        const targetScene = (game as Game).scenes!.get(targetSceneId);
-        if (targetScene) {
-            await targetScene.activate();
-            if (targetScene.journal) {
-                // await targetScene.journal.show();
-                const journal = targetScene.journal;
-                if (journal.sheet) {
-                    if (!journal.testUserPermission((game as Game).user!, 'LIMITED')) {
-                        return ui.notifications!.warn(`You do not have permission to view this ${journal.documentName} sheet.`);
-                    }
-                    journal.sheet.render(true);
+    const targetScene = (game as Game).scenes!.get(targetSceneId);
+    if (targetScene) {
+        await targetScene.activate();
+        if (targetScene.journal) {
+            // await targetScene.journal.show();
+            const journal = targetScene.journal;
+            if (journal.sheet) {
+                if (!journal.testUserPermission((game as Game).user!, 'LIMITED')) {
+                    return ui.notifications!.warn(`You do not have permission to view this ${journal.documentName} sheet.`);
                 }
+                journal.sheet.render(true);
             }
         }
     }
