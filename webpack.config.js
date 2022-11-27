@@ -22,15 +22,15 @@ module.exports = {
             publicPath: '/',
             writeToDisk: true,
         },
-        proxy: [
-            {
-                context: (pathname) => {
-                    return !pathname.match('^/sockjs') && !pathname.match('^/ws');
-                },
-                target: 'http://localhost:30000',
-                ws: true,
-            },
-        ],
+        // proxy: [
+        //     {
+        //         context: (pathname) => {
+        //             return !pathname.match('^/sockjs') && !pathname.match('^/ws');
+        //         },
+        //         target: 'http://localhost:30000',
+        //         ws: true,
+        //     },
+        // ],
     },
     module: {
         rules: [

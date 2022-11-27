@@ -4,15 +4,14 @@ import { ServerPush } from './src/server-push';
 import { IOgModule } from './src/IModule';
 import { ActivateScene } from './src/ActivateScene';
 // import { OgSettings } from './src/OgSettings';
-import { extensions } from './src/GameExtensions';
 import { OpenSceneNotes } from './src/OpenSceneNotes';
 
 const modules = [
     // extensions.settings,
     new ActivateScene(),
     new OpenSceneNotes(),
-    /*, new ServerPush()*/
-    /*, new VehicleMovement(),*/
+    new ServerPush(),
+    //new VehicleMovement()
 ] as IOgModule[];
 
 Hooks.once('init', async function () {
@@ -24,8 +23,6 @@ Hooks.once('init', async function () {
             module.init();
         }
     }
-
-    (game as any)['og'] = extensions;
 
     logText('initiated');
 });

@@ -1,6 +1,6 @@
 {
     "name": "og-experiments",
-    "version": "0.0.1",
+    "version": "0.0.5",
     "description": "",
     "private": true,
     "main": "dist/index.js",
@@ -14,7 +14,7 @@
     "author": "Carl-Hugo Marcotte",
     "license": "MIT",
     "devDependencies": {
-        "@league-of-foundry-developers/foundry-vtt-types": "^9.269.1",
+        "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
         "clean-webpack-plugin": "4.0.0",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "6.7.1",

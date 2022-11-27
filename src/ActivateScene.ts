@@ -1,14 +1,13 @@
-import { extensions } from './GameExtensions';
 import { IOgModule } from './IModule';
-import { logText } from './utils';
+import { addGameExtensions, logText } from './utils';
 
 export class ActivateScene implements IOgModule {
     init(): void {
         logText('ActivateScene initiating');
 
-        extensions.flow = {
+        addGameExtensions('flow', {
             activate: this.activate,
-        };
+        });
 
         (CONFIG as any).TextEditor.enrichers.push({
             pattern: /@ActivateScene\[([^\]]+)\](?:{([^}]+)})?/gm,

@@ -2,7 +2,7 @@
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { IOgModule } from './IModule';
 import Keycloak, { KeycloakAdapter } from 'keycloak-js';
-import { logText } from './utils';
+import { addGameExtensions, logText } from './utils';
 
 // function logText(text: string) {
 //     console.debug('og-experiments | ' + text);
@@ -45,12 +45,20 @@ class AuthService {
         this._authenticated = v;
     }
 
+    public get user(): Keycloak {
+        return this._keycloak;
+    }
+
     async init() {
         var me = this;
         await this._keycloak
-            .init({ onLoad: 'check-sso' }) // check-sso | login-required // silentCheckSsoRedirectUri: 'https://localhost:7263/'
+            .init({
+                onLoad: 'login-required', // check-sso | login-required // silentCheckSsoRedirectUri: 'https://localhost:7263/'
+                // silentCheckSsoRedirectUri: 'https://localhost:30000/',
+                enableLogging: true,
+            })
             .then(function (authenticated) {
-                console.warn(authenticated ? 'authenticated' : 'not authenticated');
+                logText(authenticated ? 'authenticated' : 'not authenticated');
                 me.authenticated = authenticated;
                 if (authenticated) {
                     me.token = me._keycloak.token;
@@ -75,10 +83,17 @@ export class ServerPush implements IOgModule {
         }
 
         let connection = new HubConnectionBuilder()
-            .withUrl('https://localhost:7263/journal-entry', {
+            .withUrl('https://localhost:7263/hubs/default', {
                 accessTokenFactory: () => this.auth.token!,
             })
             .build();
+
+        var user = this.auth.user;
+        addGameExtensions('serverPush', {
+            connection,
+            user,
+            ping: () => connection.invoke('Ping'),
+        });
 
         connection.on('pong', () => {
             logText('pong');
@@ -86,8 +101,10 @@ export class ServerPush implements IOgModule {
 
         connection.on('createShowAndDeleteNewJournalEntry', this.createShowAndDeleteNewJournalEntry);
         connection.on('createAndShowTemporaryJournalEntry', this.createAndShowTemporaryJournalEntry);
+        connection.on('execute', this.execute);
+        connection.on('executeAsync', this.executeAsync);
 
-        connection.start().then(() => connection.invoke('Ping'));
+        connection.start();
 
         logText('ServerPush is ready');
     }
@@ -171,6 +188,15 @@ export class ServerPush implements IOgModule {
         // V10 multi-page syntax
         // JournalEntry.create({name: "Journal name", pages:[{type: "text", name: "Quest hook", text:{content: `HTML content here`}}]})
     }
+
+    async execute(options: ExecuteOptions, user: ExecuteUser): Promise<void> {
+        logText('ServerPush.execute', options, user);
+        eval(options.command);
+    }
+    async executeAsync(options: ExecuteOptions, user: ExecuteUser): Promise<void> {
+        logText('ServerPush.executeAsync', options, user);
+        await new Promise((resolve, reject) => eval(options.command));
+    }
 }
 // await game.experiments.showNewJournalEntry('Invented note', '<p>Some cool text with <strong>bold content</strong>.</p>');
 
@@ -185,4 +211,11 @@ interface ICreateAndShowTemporaryJournalEntry {
     content: string;
     deleteDelay?: number;
     isPermanent: boolean;
+}
+
+interface ExecuteOptions {
+    command: string;
+}
+interface ExecuteUser {
+    name: string;
 }
