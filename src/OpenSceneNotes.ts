@@ -21,7 +21,7 @@ export class OpenSceneNotes implements IOgModule {
         this.openSceneNotesOnReady = (game as Game).settings.get(namespace, this._openSceneNotesKeyOnReady) as boolean;
 
         addGameExtensions('flow', {
-            openSceneNotes: this.openSceneNotes,
+            openSceneNotes,
         });
 
         logText('OpenSceneNotes initiated');
@@ -29,16 +29,9 @@ export class OpenSceneNotes implements IOgModule {
     ready(): void {
         logText('OpenSceneNotes is getting ready');
         if (this.openSceneNotesOnReady) {
-            this.openSceneNotes();
+            openSceneNotes();
         }
         logText('OpenSceneNotes is ready');
-    }
-
-    private openSceneNotes() {
-        const currentSceneJournal = (game as Game).scenes!.active!.journal;
-        if (currentSceneJournal && currentSceneJournal.sheet) {
-            currentSceneJournal.sheet.render(true);
-        }
     }
 
     public get openSceneNotesOnReady() {
@@ -48,5 +41,15 @@ export class OpenSceneNotes implements IOgModule {
     public set openSceneNotesOnReady(value: Boolean) {
         this._openSceneNotesOnReady = value;
         (game as Game).settings.set(namespace, this._openSceneNotesKeyOnReady, value);
+    }
+}
+
+export function openSceneNotes() {
+    const currentSceneJournal = (game as Game).scenes!.active!.journal;
+    if (currentSceneJournal && currentSceneJournal.sheet) {
+        if (!currentSceneJournal.testUserPermission((game as Game).user!, 'LIMITED')) {
+            return ui.notifications!.warn(`You do not have permission to view this ${currentSceneJournal.documentName} sheet.`);
+        }
+        currentSceneJournal.sheet.render(true);
     }
 }
