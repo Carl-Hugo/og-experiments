@@ -1,4 +1,5 @@
 import { IOgModule } from './IModule';
+import { openJournalEntry } from './openJournalEntry';
 import { addGameExtensions, logText } from './utils';
 
 export class ActivateScene implements IOgModule {
@@ -68,15 +69,6 @@ export async function activateScene(targetSceneId: string) {
     const targetScene = (game as Game).scenes!.get(targetSceneId);
     if (targetScene) {
         await targetScene.activate();
-        if (targetScene.journal) {
-            // await targetScene.journal.show();
-            const journal = targetScene.journal;
-            if (journal.sheet) {
-                if (!journal.testUserPermission((game as Game).user!, 'LIMITED')) {
-                    return ui.notifications!.warn(`You do not have permission to view this ${journal.documentName} sheet.`);
-                }
-                journal.sheet.render(true);
-            }
-        }
+        openJournalEntry(targetScene.journal);
     }
 }

@@ -1,5 +1,6 @@
 import { IOgModule } from './IModule';
 import { OgSetting } from './OgSettings';
+import { openJournalEntry } from './openJournalEntry';
 import { addGameExtensions, logText } from './utils';
 
 export class OpenSceneNotes implements IOgModule {
@@ -29,10 +30,5 @@ export class OpenSceneNotes implements IOgModule {
 
 export function openSceneNotes() {
     const currentSceneJournal = (game as Game).scenes!.active!.journal;
-    if (currentSceneJournal && currentSceneJournal.sheet) {
-        if (!currentSceneJournal.testUserPermission((game as Game).user!, 'LIMITED')) {
-            return ui.notifications!.warn(`You do not have permission to view this ${currentSceneJournal.documentName} sheet.`);
-        }
-        currentSceneJournal.sheet.render(true);
-    }
+    openJournalEntry(currentSceneJournal);
 }
