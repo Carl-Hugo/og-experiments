@@ -1,46 +1,29 @@
 import { IOgModule } from './IModule';
-import { namespace } from './OgSettings';
+import { OgSetting } from './OgSettings';
 import { addGameExtensions, logText } from './utils';
 
 export class OpenSceneNotes implements IOgModule {
-    private _openSceneNotesOnReady: Boolean = true;
-    private _openSceneNotesKeyOnReady: string = 'openSceneNotesOnReady';
+    private openSceneNotesOnReady = new OgSetting<boolean>('openSceneNotesOnReady', true, {
+        name: 'Auto-open scene notes?',
+        hint: 'If enabled, the scene notes of the current scene will open when the server first load.',
+        type: Boolean,
+    });
 
     init(): void {
         logText('OpenSceneNotes initiating');
-
-        (game as Game).settings.register(namespace, this._openSceneNotesKeyOnReady, {
-            name: 'Auto-open scene notes?',
-            hint: 'If enabled, the scene notes of the current scene will open when the server first load.',
-            scope: 'client',
-            config: true,
-            type: Boolean,
-            default: this._openSceneNotesOnReady,
-            onChange: (value) => (this._openSceneNotesOnReady = value),
-        });
-        this.openSceneNotesOnReady = (game as Game).settings.get(namespace, this._openSceneNotesKeyOnReady) as boolean;
-
+        this.openSceneNotesOnReady.init();
         addGameExtensions('flow', {
             openSceneNotes,
         });
-
         logText('OpenSceneNotes initiated');
     }
+
     ready(): void {
         logText('OpenSceneNotes is getting ready');
-        if (this.openSceneNotesOnReady) {
+        if (this.openSceneNotesOnReady.value) {
             openSceneNotes();
         }
         logText('OpenSceneNotes is ready');
-    }
-
-    public get openSceneNotesOnReady() {
-        return this._openSceneNotesOnReady;
-    }
-
-    public set openSceneNotesOnReady(value: Boolean) {
-        this._openSceneNotesOnReady = value;
-        (game as Game).settings.set(namespace, this._openSceneNotesKeyOnReady, value);
     }
 }
 
