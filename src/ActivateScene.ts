@@ -1,12 +1,12 @@
 import { IOgModule } from './IModule';
-import { openJournalEntry } from './openJournalEntry';
-import { addGameExtensions, logText } from './utils';
+import { openJournalEntry } from './Journal/openJournalEntry';
+import { registerGameExtensions, logText } from './utils';
 
 export class ActivateScene implements IOgModule {
     init(): void {
         logText('ActivateScene initiating');
 
-        addGameExtensions('flow', {
+        registerGameExtensions('flow', {
             activateScene,
         });
 

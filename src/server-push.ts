@@ -2,7 +2,7 @@
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { IOgModule } from './IModule';
 import Keycloak, { KeycloakAdapter } from 'keycloak-js';
-import { addGameExtensions, logError, logText } from './utils';
+import { registerGameExtensions, logError, logText, logWarn } from './utils';
 
 // function logText(text: string) {
 //     console.debug('og-experiments | ' + text);
@@ -78,7 +78,12 @@ export class ServerPush implements IOgModule {
 
         await this.auth.init();
         if (!this.auth.authenticated) {
-            console.error("Not authenticated! Can't proceed with ServerPush.ready.");
+            logError("Not authenticated! Can't proceed with ServerPush.ready.");
+            return;
+        }
+        var user = this.auth.user;
+        if (!user.tokenParsed) {
+            logError('The `tokenParsed` property is not defined.');
             return;
         }
 
@@ -88,121 +93,42 @@ export class ServerPush implements IOgModule {
             })
             .build();
 
-        var user = this.auth.user;
-        addGameExtensions('serverPush', {
+        registerGameExtensions('serverPush', {
             connection,
-            user,
-            ping: () => connection.invoke('Ping'),
-        });
-        addGameExtensions('flow', {
-            createAndShowTemporaryJournalEntry: this.createAndShowTemporaryJournalEntry,
+            user: {
+                email: user.tokenParsed.email,
+                name: user.tokenParsed.name,
+                firstname: user.tokenParsed.given_name,
+                lastname: user.tokenParsed.family_name,
+                username: user.tokenParsed.preferred_username,
+                access: {
+                    realm: {
+                        roles: user.tokenParsed.realm_access?.roles,
+                    },
+                    resource: user.tokenParsed.resource_access,
+                },
+            },
+            actions: {
+                ping: () => connection.invoke('Ping'),
+            },
         });
 
         connection.on('pong', () => {
             logText('pong');
         });
 
-        // connection.on('createShowAndDeleteNewJournalEntry', this.createShowAndDeleteNewJournalEntry);
-        // connection.on('createAndShowTemporaryJournalEntry', this.createAndShowTemporaryJournalEntry);
-
         connection.on('execute', this.execute);
         connection.on('executeAsync', this.executeAsync);
+
+        connection.onclose((error) => {
+            logWarn('connection.onclose', error);
+        });
 
         connection.start();
 
         logText('ServerPush is ready');
     }
-    async init(): Promise<void> {
-        logText('ServerPush initiating');
-        // Javascript
-        // game.experiments.showJournalEntryById = async function (journalEntryId) {
-        //     // var noteById = game.journal.find((entry) => entry.data._id === journalEntryId);
-        //     // await noteById.show();
-        //     game.StoryTeller.showStoryByIDToAll(journalEntryId);
-        // };
-        // //var journalEntryId="a7LBKwELqDwwcCzz"
-        // game.experiments.showNewJournalEntry = async function (name, content, deleteDelay, isPermanent) {
-        //     const entry = await JournalEntry.create({
-        //         name: name,
-        //         content: content,
-        //     });
-        //     logText(`Journal entry '${name}' created with isPermanent = ${isPermanent}.`);
-        //     await entry.show('text', true);
-
-        //     if (isPermanent) {
-        //         return;
-        //     }
-        //     const deleteEntryInMS = deleteDelay || 60000;
-        //     logText(`Scheduling journal entry deletion in ${deleteEntryInMS} ms.`);
-        //     setTimeout(async () => {
-        //         logText('Deleting journal entry', entry);
-        //         await entry.delete();
-        //         logText('Journal entry deleted');
-        //     }, deleteEntryInMS);
-
-        //     // V10 multi-page syntax
-        //     // JournalEntry.create({name: "Journal name", pages:[{type: "text", name: "Quest hook", text:{content: `HTML content here`}}]})
-        // };
-
-        logText('ServerPush initiated');
-    }
-
-    async createAndShowTemporaryJournalEntry(options: ICreateAndShowTemporaryJournalEntry): Promise<void> {
-        const entry = await JournalEntry.create(
-            {
-                name: options.name,
-                pages: [
-                    {
-                        name: options.name,
-                        type: 'text',
-                        text: {
-                            content: options.content,
-                        },
-                        // @ts-ignore
-                        ownership: { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER },
-                    },
-                ],
-                // @ts-ignore
-                ownership: { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER },
-            },
-            { temporary: true, renderSheet: true }
-        );
-
-        if (!entry) {
-            logError('No entry was created.');
-            return;
-        }
-
-        logText(`Journal entry '${options.name}' created.`, entry);
-        await entry.sheet?.render(true);
-    }
-
-    // async createShowAndDeleteNewJournalEntry(options: ICreateShowAndDeleteNewJournalEntry): Promise<void> {
-    //     const entry = await JournalEntry.create({
-    //         name: options.name,
-    //         content: options.content,
-    //     });
-    //     if (entry === undefined) {
-    //         console.error('No entry was created.');
-    //         return;
-    //     }
-    //     logText(`Journal entry '${options.name}' created with isPermanent = ${options.isPermanent}.`);
-    //     await entry.show('text', true);
-
-    //     if (options.isPermanent) {
-    //         return;
-    //     }
-    //     const deleteEntryInMS = options.deleteDelay || 60000;
-    //     logText(`Scheduling journal entry deletion in ${deleteEntryInMS} ms.`);
-    //     setTimeout(async () => {
-    //         console.debug('Deleting journal entry', entry);
-    //         await entry.delete();
-    //         logText('Journal entry deleted');
-    //     }, deleteEntryInMS);
-
-    //     // V10 multi-page syntax
-    //     // JournalEntry.create({name: "Journal name", pages:[{type: "text", name: "Quest hook", text:{content: `HTML content here`}}]})
-    // }
+    async init(): Promise<void> {}
 
     async execute(options: ExecuteOptions, user: ExecuteUser): Promise<void> {
         logText('ServerPush.execute', options, user);
@@ -212,18 +138,6 @@ export class ServerPush implements IOgModule {
         logText('ServerPush.executeAsync', options, user);
         await new Promise((resolve, reject) => eval(options.command));
     }
-}
-
-// interface ICreateShowAndDeleteNewJournalEntry {
-//     name: string;
-//     content: string;
-//     deleteDelay?: number;
-//     isPermanent: boolean;
-// }
-interface ICreateAndShowTemporaryJournalEntry {
-    name: string;
-    content: string;
-    ownership: number;
 }
 
 interface ExecuteOptions {

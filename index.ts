@@ -5,8 +5,10 @@ import { IOgModule } from './src/IModule';
 import { ActivateScene } from './src/ActivateScene';
 import { OpenSceneNotes } from './src/OpenSceneNotes';
 import { globalSettings } from './src/OgSettings';
+import { JournalModule } from './src/Journal';
 
 const modules = [
+    new JournalModule(),
     new ActivateScene(),
     new OpenSceneNotes(),
     new ServerPush(),

@@ -1,5 +1,5 @@
-import { globalSettings } from './OgSettings';
-import { logWarn } from './utils';
+import { globalSettings } from '../OgSettings';
+import { logWarn } from '../utils';
 
 export function openJournalEntry(journal: JournalEntry | null) {
     if (journal && journal.sheet) {

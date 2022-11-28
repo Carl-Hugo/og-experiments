@@ -1,7 +1,7 @@
 import { IOgModule } from './IModule';
 import { OgSetting } from './OgSettings';
-import { openJournalEntry } from './openJournalEntry';
-import { addGameExtensions, logText } from './utils';
+import { openJournalEntry } from './Journal/openJournalEntry';
+import { registerGameExtensions, logText } from './utils';
 
 export class OpenSceneNotes implements IOgModule {
     private openSceneNotesOnReady = new OgSetting<boolean>('openSceneNotesOnReady', true, {
@@ -13,7 +13,7 @@ export class OpenSceneNotes implements IOgModule {
     init(): void {
         logText('OpenSceneNotes initiating');
         this.openSceneNotesOnReady.init();
-        addGameExtensions('flow', {
+        registerGameExtensions('flow', {
             openSceneNotes,
         });
         logText('OpenSceneNotes initiated');

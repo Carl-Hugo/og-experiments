@@ -18,7 +18,7 @@ function enforceOgExtensionsInitialized() {
     }
 }
 
-export function addGameExtensions(key: string, setting: any) {
+export function registerGameExtensions(key: string, setting: any) {
     enforceOgExtensionsInitialized();
     (game as any)['og'][key] = {
         ...(game as any)['og'][key],
