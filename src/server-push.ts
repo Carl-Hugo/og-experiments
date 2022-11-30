@@ -3,21 +3,8 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import { IOgModule } from './IModule';
 import Keycloak, { KeycloakAdapter } from 'keycloak-js';
 import { registerGameExtensions, logError, logText, logWarn } from './utils';
+import { OgSetting } from './OgSettings';
 
-// function logText(text: string) {
-//     console.debug('og-experiments | ' + text);
-// }
-
-// var noteByIndex = game.journal._source[16]
-// var journalEntryId = 'zEttYl2LliDg1W7O'; // "U3BmDb23GUxnMP9M"
-/*
-const journalEntryId = 'zEttYl2LliDg1W7O';
-await game.experiments.showJournalEntryById(journalEntryId);
-*/
-// var noteById = game.journal.find((entry) => entry.data._id === journalEntryId);
-// noteById.show();
-//
-//new JournalEntry(note).show()
 class AuthService {
     private _keycloak: Keycloak;
 
@@ -72,9 +59,25 @@ class AuthService {
 
 export class ServerPush implements IOgModule {
     private auth = new AuthService();
+    private enableServerPush = new OgSetting<boolean>('enableServerPush', true, {
+        name: 'Enable the server-push module?',
+        hint: 'If enabled, the module will load and everyone will need to authenticate againt the KeyClock server.',
+        type: Boolean,
+        scope: 'world',
+    });
+
+    async init(): Promise<void> {
+        logText('ServerPush initializing');
+        this.enableServerPush.init();
+        logText('ServerPush initialized');
+    }
 
     async ready(): Promise<void> {
         logText('ServerPush getting ready');
+
+        if (!this.enableServerPush.value) {
+            return;
+        }
 
         await this.auth.init();
         if (!this.auth.authenticated) {
@@ -128,7 +131,6 @@ export class ServerPush implements IOgModule {
 
         logText('ServerPush is ready');
     }
-    async init(): Promise<void> {}
 
     async execute(options: ExecuteOptions, user: ExecuteUser): Promise<void> {
         logText('ServerPush.execute', options, user);
