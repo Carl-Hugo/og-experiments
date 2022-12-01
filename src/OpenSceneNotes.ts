@@ -12,7 +12,6 @@ export class OpenSceneNotes implements IOgModule {
 
     init(): void {
         logText('OpenSceneNotes initiating');
-        this.openSceneNotesOnReady.init();
         registerGameExtensions('flow', {
             openSceneNotes,
         });
@@ -21,6 +20,7 @@ export class OpenSceneNotes implements IOgModule {
 
     ready(): void {
         logText('OpenSceneNotes is getting ready');
+        this.openSceneNotesOnReady.ready();
         if (this.openSceneNotesOnReady.value) {
             openSceneNotes();
         }

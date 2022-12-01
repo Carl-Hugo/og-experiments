@@ -6,12 +6,14 @@ import { ActivateScene } from './src/ActivateScene';
 import { OpenSceneNotes } from './src/OpenSceneNotes';
 import { globalSettings } from './src/OgSettings';
 import { JournalModule } from './src/Journal';
+import { SocialEncounterTracker } from './src/SocialEncounterTracker';
 
 const modules = [
     new JournalModule(),
     new ActivateScene(),
     new OpenSceneNotes(),
     new ServerPush(),
+    new SocialEncounterTracker(),
     globalSettings,
     //new VehicleMovement()
 ] as IOgModule[];

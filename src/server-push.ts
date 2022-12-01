@@ -68,12 +68,12 @@ export class ServerPush implements IOgModule {
 
     async init(): Promise<void> {
         logText('ServerPush initializing');
-        this.enableServerPush.init();
         logText('ServerPush initialized');
     }
 
     async ready(): Promise<void> {
         logText('ServerPush getting ready');
+        this.enableServerPush.ready();
 
         if (!this.enableServerPush.value) {
             return;

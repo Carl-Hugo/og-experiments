@@ -1,0 +1,41 @@
+<style>{{styles}}</style>
+<div class='container'>
+    <div class='item status-{{playerStatus}}'>
+        <strong>PJs</strong>
+        {{#if isGM}}
+            <div class='edit-container'>
+                <div>
+                    <label for='og-experiments-playerStrain'>Current</label>
+                    <input type='number' name='playerStrain' value='{{playerStrain}}' id='og-experiments-playerStrain' />
+                </div>
+                <div>
+                    <label for='og-experiments-maxPlayerStrain'>Max</label>
+                    <input type='number' name='maxPlayerStrain' value='{{maxPlayerStrain}}' id='og-experiments-maxPlayerStrain' />
+                </div>
+            </div>
+        {{else}}
+            <span>{{playerStrain}}/{{maxPlayerStrain}}</span>
+        {{/if}}
+    </div>
+    <div class='item status-{{targetStatus}}'>
+        <strong>PNJs</strong>
+        {{#if isGM}}
+            <div class='edit-container'>
+                <div>
+                    <label for='og-experiments-targetStrain'>Current</label>
+                    <input type='number' name='targetStrain' value='{{targetStrain}}' id='og-experiments-targetStrain' />
+                </div>
+                <div>
+                    <label for='og-experiments-maxTargetStrain'>Max</label>
+                    <input type='number' name='maxTargetStrain' value='{{maxTargetStrain}}' id='og-experiments-maxTargetStrain' />
+                </div>
+            </div>
+        {{else}}
+            {{#if displayTargetToPlayers}}
+                <span>{{targetStrain}}/{{maxTargetStrain}}</span>
+            {{else}}
+                <span>??/??</span>
+            {{/if}}
+        {{/if}}
+    </div>
+</div>
