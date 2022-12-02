@@ -1,6 +1,6 @@
 import { logText } from './src/utils';
 // import { VehicleMovement } from './src/movement.js';
-import { ServerPush } from './src/server-push';
+import { ServerPush } from './src/ServerPush';
 import { IOgModule } from './src/IModule';
 import { ActivateScene } from './src/ActivateScene';
 import { OpenSceneNotes } from './src/OpenSceneNotes';
@@ -12,8 +12,8 @@ const modules = [
     new JournalModule(),
     new ActivateScene(),
     new OpenSceneNotes(),
-    new ServerPush(),
     new SocialEncounterTracker(),
+    new ServerPush(),
     globalSettings,
     //new VehicleMovement()
 ] as IOgModule[];

@@ -60,7 +60,7 @@ class AuthService {
 export class ServerPush implements IOgModule {
     private auth = new AuthService();
     private enableServerPush = new OgSetting<boolean>('enableServerPush', true, {
-        name: 'Enable the server-push module?',
+        name: 'Enable the ServerPush module?',
         hint: 'If enabled, the module will load and everyone will need to authenticate againt the KeyClock server.',
         type: Boolean,
         scope: 'world',
