@@ -1,6 +1,6 @@
 import { IOgModule } from './IModule';
 import { OgSetting } from './OgSettings';
-import { logText } from './utils';
+import { logText, registerGameExtensions } from './utils';
 import { css } from './css';
 const styles = css`
     #social-encounter-tracker {
@@ -249,6 +249,11 @@ export class SocialEncounterTracker implements IOgModule {
         this.targetStrain.ready();
         this.maxTargetStrain.ready();
         this.displayTargetToPlayers.ready();
+        registerGameExtensions('SocialEncounterTracker', {
+            open: (force: boolean = true) => this.form.render(force),
+            close: () => this.form.close(),
+            internal: { form: this.form },
+        });
         this.form.render(true);
         logText('SocialEncounterTracker is ready');
     }
