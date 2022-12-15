@@ -132,12 +132,12 @@ class SocialEncounterTrackerForm extends FormApplication {
             if (max === 0) {
                 return 'unknown';
             }
-            if (current === 0) {
+            if (current >= max) {
                 return 'defeated';
             }
-            const yellowThreshold = Math.round(max / 2);
-            const redThreshold = Math.round(max / 4);
-            return current <= redThreshold ? 'low' : current <= yellowThreshold ? 'average' : 'good';
+            const yellowThreshold = Math.ceil(max / 2.0);
+            const redThreshold = Math.ceil(max * 0.75);
+            return current >= redThreshold ? 'low' : current >= yellowThreshold ? 'average' : 'good';
         }
     }
 
@@ -258,3 +258,8 @@ export class SocialEncounterTracker implements IOgModule {
         logText('SocialEncounterTracker is ready');
     }
 }
+
+// TODO
+// - Add a "show/hide" button in the config
+// - Add a way to "force display" the window to all players
+// - Add an icon when one of the two party reaches 0
