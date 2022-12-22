@@ -2,9 +2,7 @@ import { IOgModule } from './IModule';
 import { registerGameExtensions } from './utils';
 
 export class Reload implements IOgModule {
-    init(): void {
-        throw new Error('Method not implemented.');
-    }
+    init(): void {}
     ready(): void {
         registerGameExtensions('reload', {
             // scripts: () => {
