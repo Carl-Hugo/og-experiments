@@ -1,5 +1,6 @@
 import { IOgModule } from './IModule';
 import { namespace } from './OgSettings';
+import { OgGameModuleSocket } from './OgGameModuleSocket';
 import { logError, logText, registerGameExtensions } from './utils';
 
 const enricherName = 'StarWarsCrawl';
@@ -11,11 +12,13 @@ iframe.style.position = 'absolute';
 iframe.style.border = '0px none';
 
 export class StarWarsCrawl implements IOgModule {
+    private ogGameModuleSocket = new OgGameModuleSocket(enricherName);
     init(): void {
         logText('StarWarsCrawl initiating');
 
         registerGameExtensions('crawl', {
             loadCrawl,
+            unloadCrawl,
         });
 
         (CONFIG as any).TextEditor.enrichers.push({
@@ -67,11 +70,10 @@ export class StarWarsCrawl implements IOgModule {
             logText('Click: ', target.dataset);
             if (target && target.dataset && target.dataset.type === enricherName) {
                 e.preventDefault();
-                (game as Game).socket!.emit(`module.${namespace}`, {
-                    name: enricherName,
+                this.ogGameModuleSocket.broadcast<CrawlPayload>({
                     action: target.dataset.socketAction,
                     payload: {
-                        url: target.dataset.url,
+                        crawlId: target.dataset.url,
                     },
                 });
                 if (target.dataset.socketAction === 'open') {
@@ -86,32 +88,18 @@ export class StarWarsCrawl implements IOgModule {
     }
     ready(): void {
         logText('StarWarsCrawl is getting ready');
-        (game as Game).socket!.on(`module.${namespace}`, async (event: SocketEvent) => {
-            logText('Socket received event: ', event);
-            if (event.name === enricherName) {
-                if (event.action === 'open') {
-                    await loadCrawl(event.payload.url);
-                } else if (event.action === 'close') {
-                    await unloadCrawl(event.payload.url);
-                }
-            }
-        });
+        this.ogGameModuleSocket.registerAction<CrawlPayload>('open', loadCrawl);
+        this.ogGameModuleSocket.registerAction<CrawlPayload>('close', unloadCrawl);
         logText('StarWarsCrawl is ready');
     }
 }
 
-interface SocketEvent {
-    name: string;
-    action: string;
-    payload: any;
-}
-
-async function loadCrawl(crawlId: string) {
+async function loadCrawl(payload: CrawlPayload) {
     if (hasIframe()) {
         logText('The iframe is already there; cannot add.');
         return;
     }
-    const url = `https://crawls.rpg.solutions/crawls/play/${crawlId}`;
+    const url = `https://crawls.rpg.solutions/crawls/play/${payload.crawlId}`;
     iframe.src = url;
     iframe.addEventListener('load', (e) => {
         logText('Crawl iframe is loaded');
@@ -123,7 +111,7 @@ async function loadCrawl(crawlId: string) {
     document.body.appendChild(iframe);
 }
 
-async function unloadCrawl(crawlId: string) {
+async function unloadCrawl(payload: CrawlPayload) {
     if (!hasIframe()) {
         logText('The iframe is not present; cannot remove.');
         return;
@@ -139,4 +127,8 @@ function hasIframe() {
         }
     }
     return false;
+}
+
+interface CrawlPayload {
+    crawlId: string;
 }
