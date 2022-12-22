@@ -7,6 +7,7 @@ import { OpenSceneNotes } from './src/OpenSceneNotes';
 import { globalSettings } from './src/OgSettings';
 import { JournalModule } from './src/Journal';
 import { SocialEncounterTracker } from './src/SocialEncounterTracker';
+import { Reload } from './src/Reload';
 
 const modules = [
     new JournalModule(),
@@ -14,6 +15,7 @@ const modules = [
     new OpenSceneNotes(),
     new SocialEncounterTracker(),
     new ServerPush(),
+    new Reload(),
     globalSettings,
     //new VehicleMovement()
 ] as IOgModule[];
