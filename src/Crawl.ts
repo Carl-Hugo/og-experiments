@@ -7,9 +7,27 @@ const enricherName = 'StarWarsCrawl';
 const iframe = document.createElement('iframe');
 iframe.width = '100%';
 iframe.height = '100%';
-iframe.style.zIndex = '999999;';
+iframe.style.zIndex = '999';
 iframe.style.position = 'absolute';
 iframe.style.border = '0px none';
+
+const crawlIcon = 'fa-regular fa-projector'; //<i class="fa-brands fa-galactic-republic"></i>
+const openCrawlIcon = 'fa-regular fa-power-off'; //<i class="fa-light fa-presentation-screen"></i>
+const closeCrawlIcon = 'fa-regular fa-circle-xmark';
+const playCrawlIcon = 'fa-regular fa-play';
+
+const crawlIconElement = document.createElement('i');
+crawlIconElement.className = crawlIcon;
+
+const closeButton = document.createElement('a');
+closeButton.dataset['type'] = enricherName;
+closeButton.dataset['socketAction'] = 'close';
+closeButton.style.zIndex = '1000';
+closeButton.style.position = 'absolute';
+closeButton.style.top = '0';
+closeButton.style.right = '0';
+closeButton.classList.add('content-link');
+closeButton.innerHTML = `<i class="${crawlIcon}"></i><i class="${closeCrawlIcon}"></i> Close`;
 
 export class StarWarsCrawl implements IOgModule {
     private ogGameModuleSocket = new OgGameModuleSocket(enricherName);
@@ -34,42 +52,56 @@ export class StarWarsCrawl implements IOgModule {
                         uuid: `${enricherName}.${url}`,
                         id: url,
                         type: enricherName,
-                        tooltip: 'Link',
                         broken: false,
+                        tooltip: 'tmp',
                         url: url,
                     },
                 };
 
-                const actionButton = document.createElement('a');
-                actionButton.classList.add(...data.classes);
-                actionButton.draggable = false;
-                for (let [k, v] of Object.entries(data.dataset)) {
-                    actionButton.dataset[k] = v;
-                }
-                actionButton.dataset['socketAction'] = 'open';
-                actionButton.innerHTML = `<i class="fa-brands fa-galactic-republic"></i><i class="fa-light fa-arrow-up-right-from-square"></i> ${data.name}`;
-
-                const closeButton = document.createElement('a');
-                closeButton.classList.add(...data.classes);
-                closeButton.draggable = false;
-                for (let [k, v] of Object.entries(data.dataset)) {
-                    closeButton.dataset[k] = v;
-                }
-                closeButton.dataset['socketAction'] = 'close';
-                closeButton.innerHTML = `<i class="fa-brands fa-galactic-republic"></i><i class="fa-regular fa-circle-xmark"></i> Close ${data.name}`;
-
                 const container = document.createElement('span');
-                container.appendChild(actionButton);
-                container.appendChild(closeButton);
+                container.classList.add('og-crawl-player');
+                container.appendChild(crawlIconElement);
+                container.appendChild(document.createTextNode(` ${data.name} `));
+                container.appendChild(CreateButton('open', `Open « ${data.name} » for everyone`, 'Open', openCrawlIcon));
+                container.appendChild(CreateButton('play', `Play « ${data.name} » for everyone`, 'Play', playCrawlIcon, true));
+                container.appendChild(CreateButton('close', `Close « ${data.name} » for everyone`, 'Close', closeCrawlIcon));
                 return container;
+
+                function CreateButton(
+                    socketAction: string,
+                    tooltip: string,
+                    text: string,
+                    iconName: string,
+                    disabled = false
+                ): HTMLElement {
+                    const button = document.createElement('a');
+                    button.classList.add(...data.classes);
+                    button.draggable = false;
+                    for (let [k, v] of Object.entries(data.dataset)) {
+                        button.dataset[k] = v;
+                    }
+                    const icon = document.createElement('i');
+                    icon.className = iconName;
+                    button.appendChild(icon);
+                    button.appendChild(document.createTextNode(text));
+
+                    button.dataset['tooltip'] = tooltip;
+                    if (disabled) {
+                        button.classList.add('broken');
+                        button.dataset['broken'] = 'true';
+                        button.dataset['tooltip'] += ' (not supported yet)';
+                    } else {
+                        button.dataset['socketAction'] = socketAction;
+                    }
+                    return button;
+                }
             },
         });
-
-        document.addEventListener('click', async (e) => {
+        document.addEventListener('click', (e) => {
             var target = e.target as any;
-            logText('Click: ', target.dataset);
-            if (target && target.dataset && target.dataset.type === enricherName) {
+            if (target && target.dataset && target.dataset.type === enricherName && target.dataset.socketAction) {
                 e.preventDefault();
+                logText('Click: ', enricherName, target.dataset.socketAction);
                 this.ogGameModuleSocket.broadcastToAll<CrawlPayload>({
                     action: target.dataset.socketAction,
                     payload: {
@@ -104,6 +136,12 @@ async function loadCrawl(payload: CrawlPayload) {
         }
     });
     document.body.appendChild(iframe);
+
+    // GM can reload everyone's UI
+    if ((game as Game).user?.isGM) {
+        logText('GM');
+        document.body.appendChild(closeButton);
+    }
 }
 
 async function unloadCrawl(payload: CrawlPayload) {
@@ -112,6 +150,7 @@ async function unloadCrawl(payload: CrawlPayload) {
         return;
     }
     document.body.removeChild(iframe);
+    document.body.removeChild(closeButton);
 }
 
 function hasIframe() {
