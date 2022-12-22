@@ -70,17 +70,12 @@ export class StarWarsCrawl implements IOgModule {
             logText('Click: ', target.dataset);
             if (target && target.dataset && target.dataset.type === enricherName) {
                 e.preventDefault();
-                this.ogGameModuleSocket.broadcast<CrawlPayload>({
+                this.ogGameModuleSocket.broadcastToAll<CrawlPayload>({
                     action: target.dataset.socketAction,
                     payload: {
                         crawlId: target.dataset.url,
                     },
                 });
-                if (target.dataset.socketAction === 'open') {
-                    await loadCrawl(target.dataset.url);
-                } else if (target.dataset.socketAction === 'close') {
-                    await unloadCrawl(target.dataset.url);
-                }
             }
         });
 
