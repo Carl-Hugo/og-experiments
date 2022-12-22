@@ -8,6 +8,7 @@ import { globalSettings } from './src/OgSettings';
 import { JournalModule } from './src/Journal';
 import { SocialEncounterTracker } from './src/SocialEncounterTracker';
 import { Reload } from './src/Reload';
+import { StarWarsCrawl } from './src/Crawl';
 
 const modules = [
     new JournalModule(),
@@ -16,6 +17,7 @@ const modules = [
     new SocialEncounterTracker(),
     new ServerPush(),
     new Reload(),
+    new StarWarsCrawl(),
     globalSettings,
     //new VehicleMovement()
 ] as IOgModule[];
