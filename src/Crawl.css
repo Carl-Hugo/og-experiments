@@ -4,14 +4,34 @@
     padding: 1px 4px;
     border: 1px solid var(--color-border-dark-tertiary);
     border-radius: 2px;
-    /* white-space: nowrap; */
     word-break: break-all;
 }
 
-.og-crawl-player > a {
-    padding: 0 3px;
+.og-crawl-player > a,
+.og-crawl-player > button {
+    padding: 0 7px;
+    margin: 0 2px;
+    display: inline-block;
+    line-height: 1.25em;
 }
 
 .og-crawl-player > button {
+    width: -moz-fit-content;
     width: fit-content;
+}
+.og-crawl-player > button:not([disabled]) {
+    background: var(--color-bg-btn-minor-active);
+    color: var(--color-text-dark-primary);
+    border-color: var(--color-border-dark-primary);
+}
+.og-crawl-player > button[disabled] {
+    cursor: default;
+    background: var(--color-bg-btn-minor-inactive);
+    color: var(--color-text-dark-inactive);
+    border-color: var(--color-underline-inactive);
+}
+
+.og-crawl-player > button.broken {
+    background: rgba(255, 0, 0, 0.05);
+    border: 1px dashed red;
 }
