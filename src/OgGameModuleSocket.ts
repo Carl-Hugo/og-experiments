@@ -10,10 +10,10 @@ export interface OgGameModuleSocketEvent<T> {
 }
 
 export class OgGameModuleSocket {
-    private registrations: { action: string; delegate: (payload: any) => {} }[] = [];
+    private registrations: { action: string; delegate: (payload: any) => void | Promise<void> }[] = [];
     constructor(public ogModuleName: string) {}
 
-    registerAction<T>(action: string, delegate: (payload: T) => {}) {
+    registerAction<T>(action: string, delegate: (payload: T) => void | Promise<void>) {
         const g = game as Game;
         if (!g.socket) {
             logError('registerToSocketEvent: The game socket was not found.');
