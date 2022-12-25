@@ -1,9 +1,10 @@
 import { IOgModule } from './IModule';
-import { namespace } from './OgSettings';
+import { namespace, OgSetting } from './OgSettings';
 import { OgGameModuleSocket } from './OgGameModuleSocket';
 import { logError, logText, registerGameExtensions } from './utils';
 
-const crawlUrlPrefix = 'https://crawls.rpg.solutions/crawls/play/';
+const defaultCrawlUrlPrefix = 'https://crawls.rpg.solutions/crawls/play/';
+const debugCrawlUrlPrefix = 'http://localhost:4200/crawls/play/';
 
 const enricherName = 'StarWarsCrawl';
 const iframe = document.createElement('iframe');
@@ -17,18 +18,28 @@ const crawlIcon = 'fa-regular fa-projector';
 const openCrawlIcon = 'fa-regular fa-power-off';
 const closeCrawlIcon = 'fa-regular fa-circle-xmark';
 const playCrawlIcon = 'fa-regular fa-play';
+const stopCrawlIcon = 'fa-regular fa-stop';
 
 const crawlIconElement = document.createElement('i');
 crawlIconElement.className = crawlIcon;
 
 export class StarWarsCrawl implements IOgModule {
     private ogGameModuleSocket = new OgGameModuleSocket(enricherName);
+    private crawlUrlPrefix = new OgSetting<string>('crawlUrlPrefix', 'https://crawls.rpg.solutions/crawls/play/', {
+        scope: 'world',
+        name: "Base Og's Crawls Central URL",
+        hint: `This represents the base URL to load crawls from (${defaultCrawlUrlPrefix}). You should not need to change this. This option is useful mainly to use a local instance of the app, during development (${debugCrawlUrlPrefix}).`,
+        type: String,
+    });
+
     init(): void {
         logText('StarWarsCrawl initiating');
 
         registerGameExtensions('crawl', {
             loadCrawl: this.loadCrawl,
             unloadCrawl: this.unloadCrawl,
+            playCrawl: this.playCrawl,
+            stopCrawl: this.stopCrawl,
         });
 
         (CONFIG as any).TextEditor.enrichers.push({
@@ -57,7 +68,8 @@ export class StarWarsCrawl implements IOgModule {
                 container.appendChild(crawlIconElement);
                 container.appendChild(document.createTextNode(` ${data.name} `));
                 container.appendChild(CreateButton(CrawlActions.open, `Open « ${data.name} » for everyone`, 'Open', openCrawlIcon));
-                container.appendChild(CreateButton(CrawlActions.play, `Play « ${data.name} » for everyone`, 'Play', playCrawlIcon, true));
+                container.appendChild(CreateButton(CrawlActions.play, `Play « ${data.name} » for everyone`, 'Play', playCrawlIcon));
+                container.appendChild(CreateButton(CrawlActions.stop, `Stop « ${data.name} » for everyone`, 'Stop', stopCrawlIcon));
                 container.appendChild(CreateButton(CrawlActions.close, `Close « ${data.name} » for everyone`, 'Close', closeCrawlIcon));
                 return container;
 
@@ -109,32 +121,61 @@ export class StarWarsCrawl implements IOgModule {
             }
         });
 
+        // on open
         document.addEventListener(`${namespace}:${enricherName}:${CrawlActions.open}`, () => {
-            document
-                .querySelectorAll(`.og-crawl-button-${CrawlActions.play}`)
-                .forEach((el) => ((el as HTMLButtonElement).disabled = false));
-            document
-                .querySelectorAll(`.og-crawl-button-${CrawlActions.close}`)
-                .forEach((el) => ((el as HTMLButtonElement).disabled = false));
-            document.querySelectorAll(`.og-crawl-button-${CrawlActions.open}`).forEach((el) => ((el as HTMLButtonElement).disabled = true));
+            disableElement(CrawlActions.open, true);
+            disableElement(CrawlActions.play, false);
+            disableElement(CrawlActions.stop, true);
+            disableElement(CrawlActions.close, false);
         });
+        // on play
+        document.addEventListener(`${namespace}:${enricherName}:${CrawlActions.play}`, () => {
+            disableElement(CrawlActions.open, true);
+            disableElement(CrawlActions.play, true);
+            disableElement(CrawlActions.stop, false);
+            disableElement(CrawlActions.close, false);
+        });
+        // on stop
+        document.addEventListener(`${namespace}:${enricherName}:${CrawlActions.stop}`, () => {
+            disableElement(CrawlActions.open, true);
+            disableElement(CrawlActions.play, false);
+            disableElement(CrawlActions.stop, true);
+            disableElement(CrawlActions.close, false);
+        });
+        // on close
         document.addEventListener(`${namespace}:${enricherName}:${CrawlActions.close}`, () => {
-            document.querySelectorAll(`.og-crawl-button-${CrawlActions.play}`).forEach((el) => ((el as HTMLButtonElement).disabled = true));
-            document
-                .querySelectorAll(`.og-crawl-button-${CrawlActions.close}`)
-                .forEach((el) => ((el as HTMLButtonElement).disabled = true));
-            document
-                .querySelectorAll(`.og-crawl-button-${CrawlActions.open}`)
-                .forEach((el) => ((el as HTMLButtonElement).disabled = false));
+            disableElement(CrawlActions.open, false);
+            disableElement(CrawlActions.play, true);
+            disableElement(CrawlActions.stop, true);
+            disableElement(CrawlActions.close, true);
         });
 
         logText('StarWarsCrawl initiated');
+        function disableElement(action: CrawlActions, disabled: boolean) {
+            document.querySelectorAll(`.og-crawl-button-${action}`).forEach((el) => ((el as HTMLButtonElement).disabled = disabled));
+        }
     }
+
     ready(): void {
         logText('StarWarsCrawl is getting ready');
-        this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.open, this.loadCrawl);
-        this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.close, this.unloadCrawl);
+        this.crawlUrlPrefix.ready();
+        this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.open, this.loadCrawl, this);
+        this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.play, this.playCrawl, this);
+        this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.stop, this.stopCrawl, this);
+        this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.close, this.unloadCrawl, this);
         logText('StarWarsCrawl is ready');
+    }
+
+    stopCrawl(payload: CrawlPayload) {
+        if (iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ name: 'OgExperiments:StarWarsCrawl:Stop' }, '*');
+        }
+    }
+
+    playCrawl(payload: CrawlPayload) {
+        if (iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ name: 'OgExperiments:StarWarsCrawl:Play' }, '*');
+        }
     }
 
     loadCrawl(payload: CrawlPayload) {
@@ -142,10 +183,10 @@ export class StarWarsCrawl implements IOgModule {
             logText('The iframe is already there; cannot add.');
             return;
         }
-        const url = crawlUrlPrefix + payload.crawlId;
+        const url = this.crawlUrlPrefix.value + payload.crawlId;
         iframe.src = url;
         iframe.addEventListener('load', (e) => {
-            logText('Crawl iframe is loaded');
+            logText('Crawl iframe is loaded', url);
             if (iframe.contentWindow == null) {
                 logError('iframe.contentWindow is null');
                 return;
@@ -220,5 +261,6 @@ interface CrawlPayload {
 enum CrawlActions {
     'open' = 'open',
     'play' = 'play',
+    'stop' = 'stop',
     'close' = 'close',
 }
