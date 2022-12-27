@@ -1,89 +1,6 @@
 import { IOgModule } from './IModule';
 import { OgSetting } from './OgSettings';
 import { logText, registerGameExtensions } from './utils';
-import { css } from './css';
-const styles = css`
-    #social-encounter-tracker {
-        box-shadow: none;
-        background: rgba(0, 0, 0, 0.25);
-    }
-    #social-encounter-tracker .window-title {
-        text-align: center;
-    }
-    #social-encounter-tracker .window-header {
-        border-bottom: 0 none;
-    }
-    #social-encounter-tracker header :not(h4) {
-        display: none;
-    }
-    #social-encounter-tracker .window-content {
-        background: transparent;
-    }
-    #social-encounter-tracker .container {
-        display: flex;
-        justify-content: space-between;
-    }
-    #social-encounter-tracker .item {
-        /* width: 5rem;
-        height: 4rem; */
-        background-color: rgba(255, 255, 255, 0.25);
-        border-radius: 1.5em;
-        margin: 0.5em;
-        display: flex;
-        align-items: center;
-        /* justify-content: center; */
-        flex-direction: column-reverse;
-        color: #fff;
-        padding: 0.25em 0.5em;
-        border: 0.5em solid;
-    }
-    #social-encounter-tracker .item.status-low {
-        border-color: darkred;
-    }
-    #social-encounter-tracker .item.status-average {
-        border-color: orange;
-    }
-    #social-encounter-tracker .item.status-good {
-        border-color: darkgreen;
-    }
-    #social-encounter-tracker .item.status-defeated {
-        border-color: red;
-        color: red;
-    }
-
-    #social-encounter-tracker .item strong {
-        display: block;
-        text-shadow: 1px 2px 5px black;
-    }
-    #social-encounter-tracker .item span {
-        font-size: 1.5rem;
-        font-weight: bold;
-        display: block;
-        text-shadow: 1px 2px 10px black;
-        padding: 0.2em;
-        min-width: 4em;
-        text-align: center;
-    }
-    #social-encounter-tracker .edit-container {
-        display: flex;
-    }
-    #social-encounter-tracker .edit-container label {
-        width: 100%;
-        text-align: center;
-        display: block;
-    }
-    #social-encounter-tracker .edit-container input {
-        width: 3em;
-        font-size: 1.5rem;
-        padding: 0.25em 0.5em;
-        text-align: center;
-        font-weight: bold;
-        color: #fff;
-        border: 0px none;
-        background-color: transparent;
-    }
-`;
-
 class SocialEncounterTrackerForm extends FormApplication {
     private playerStrain: OgSetting<number>;
     private maxPlayerStrain: OgSetting<number>;
@@ -114,8 +31,6 @@ class SocialEncounterTrackerForm extends FormApplication {
             this.position.top = y;
         }
         return {
-            styles,
-
             playerStrain: this.playerStrain.value,
             maxPlayerStrain: this.maxPlayerStrain.value,
             playerStatus: computeStatus(this.playerStrain.value, this.maxPlayerStrain.value),
