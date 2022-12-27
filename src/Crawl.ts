@@ -194,7 +194,7 @@ export class StarWarsCrawl implements IOgModule {
         });
         document.body.appendChild(iframe);
 
-        addGMButtonBar(payload.name);
+        addButtonBar(payload.name);
         logText('loadCrawl', payload);
     }
 
@@ -210,10 +210,7 @@ export class StarWarsCrawl implements IOgModule {
     }
 }
 
-function addGMButtonBar(name: string) {
-    if (!(game as Game).user?.isGM) {
-        return;
-    }
+function addButtonBar(name: string) {
     logText('addButtonBar');
 
     const buttonBar = findButtonBar(name);
@@ -221,9 +218,6 @@ function addGMButtonBar(name: string) {
     document.body.appendChild(controlsBar);
 }
 function removeGMButtonBar(name: string) {
-    if (!(game as Game).user?.isGM) {
-        return;
-    }
     logText('removeButtonBar');
 
     const controlsBar = document.getElementById('og-crawl-controls-container');
@@ -253,6 +247,8 @@ function hasIframe() {
     }
     return false;
 }
+
+const isGM = () => (game as Game).user?.isGM;
 
 interface CrawlPayload {
     crawlId: string;
