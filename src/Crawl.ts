@@ -31,6 +31,12 @@ export class StarWarsCrawl implements IOgModule {
         hint: `This represents the base URL to load crawls from (${defaultCrawlUrlPrefix}). You should not need to change this. This option is useful mainly to use a local instance of the app, during development (${debugCrawlUrlPrefix}).`,
         type: String,
     });
+    private restrictCrawlsControlsToGM = new OgSetting<boolean>('restrictCrawlsControlsToGM', true, {
+        scope: 'world',
+        name: 'Only GM can open Crawls',
+        hint: `When this option is checked, only GMs will see the buttons to open, play, stop, and close Crawls for all. The players will see the Crawl name, without any button.`,
+        type: Boolean,
+    });
 
     init(): void {
         logText('StarWarsCrawl initiating');
@@ -67,10 +73,19 @@ export class StarWarsCrawl implements IOgModule {
                 container.dataset.ogCrawlPlayerName = data.name;
                 container.appendChild(crawlIconElement);
                 container.appendChild(document.createTextNode(` ${data.name} `));
-                container.appendChild(CreateButton(CrawlActions.open, `Open « ${data.name} » for everyone`, 'Open', openCrawlIcon));
-                container.appendChild(CreateButton(CrawlActions.play, `Play « ${data.name} » for everyone`, 'Play', playCrawlIcon));
-                container.appendChild(CreateButton(CrawlActions.stop, `Stop « ${data.name} » for everyone`, 'Stop', stopCrawlIcon));
-                container.appendChild(CreateButton(CrawlActions.close, `Close « ${data.name} » for everyone`, 'Close', closeCrawlIcon));
+                var disabled = !isGM() && this.restrictCrawlsControlsToGM.value;
+                container.appendChild(
+                    CreateButton(CrawlActions.open, `Open « ${data.name} » for everyone`, 'Open', openCrawlIcon, disabled)
+                );
+                container.appendChild(
+                    CreateButton(CrawlActions.play, `Play « ${data.name} » for everyone`, 'Play', playCrawlIcon, disabled)
+                );
+                container.appendChild(
+                    CreateButton(CrawlActions.stop, `Stop « ${data.name} » for everyone`, 'Stop', stopCrawlIcon, disabled)
+                );
+                container.appendChild(
+                    CreateButton(CrawlActions.close, `Close « ${data.name} » for everyone`, 'Close', closeCrawlIcon, disabled)
+                );
                 return container;
 
                 function CreateButton(
@@ -78,7 +93,8 @@ export class StarWarsCrawl implements IOgModule {
                     tooltip: string,
                     text: string,
                     iconName: string,
-                    disabled = false
+                    disabled = false,
+                    broken = false
                 ): HTMLElement {
                     const button = document.createElement('button');
                     button.classList.add(...data.classes);
@@ -91,10 +107,10 @@ export class StarWarsCrawl implements IOgModule {
                     icon.className = iconName;
                     button.appendChild(icon);
                     button.appendChild(document.createTextNode(text));
-                    button.disabled = socketAction !== CrawlActions.open;
+                    button.disabled = disabled || socketAction !== CrawlActions.open;
 
                     button.dataset['tooltip'] = tooltip;
-                    if (disabled) {
+                    if (broken) {
                         button.classList.add('broken');
                         button.dataset['broken'] = 'true';
                         button.dataset['tooltip'] += ' (not supported yet)';
@@ -159,6 +175,7 @@ export class StarWarsCrawl implements IOgModule {
     ready(): void {
         logText('StarWarsCrawl is getting ready');
         this.crawlUrlPrefix.ready();
+        this.restrictCrawlsControlsToGM.ready();
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.open, this.loadCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.play, this.playCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.stop, this.stopCrawl, this);
