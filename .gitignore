@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Auto-gen folder
 dist/
+
+# Temp fiels
+TMP*.*
