@@ -1,4 +1,4 @@
-import { IOgModule } from './IModule';
+import { IOgModule, OgBaseModule } from './IModule';
 import { logText } from './utils';
 
 export const namespace = 'og-experiments';
@@ -59,7 +59,10 @@ export interface OgSettingChangeArgs<T> {
     value: T;
 }
 
-export class GlobalSettings implements IOgModule {
+export class GlobalSettings extends OgBaseModule {
+    public get name(): string {
+        return 'GlobalSettings';
+    }
     public accessDeniedSilentlyFails = new OgSetting<boolean>('accessDeniedSilentlyFails', true, {
         name: 'Fail silently?',
         hint: `If enabled, warnings will be displayed in the UI when the user cannot open scene notes or other elements.

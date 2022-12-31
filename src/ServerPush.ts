@@ -1,6 +1,6 @@
 // const signalR = require('@microsoft/signalr');
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import { IOgModule } from './IModule';
+import { IOgModule, OgBaseModule } from './IModule';
 import Keycloak, { KeycloakAdapter } from 'keycloak-js';
 import { registerGameExtensions, logError, logText, logWarn } from './utils';
 import { OgSetting } from './OgSettings';
@@ -57,7 +57,10 @@ class AuthService {
     }
 }
 
-export class ServerPush implements IOgModule {
+export class ServerPush extends OgBaseModule {
+    public get name(): string {
+        return 'ServerPush';
+    }
     private auth = new AuthService();
     private enableServerPush = new OgSetting<boolean>('enableServerPush', true, {
         name: 'Enable the ServerPush module?',

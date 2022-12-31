@@ -1,4 +1,4 @@
-import { IOgModule } from './IModule';
+import { OgBaseModule } from './IModule';
 import { namespace, OgSetting } from './OgSettings';
 import { OgGameModuleSocket } from './OgGameModuleSocket';
 import { logError, logText, registerGameExtensions } from './utils';
@@ -23,7 +23,10 @@ const stopCrawlIcon = 'fa-regular fa-stop';
 const crawlIconElement = document.createElement('i');
 crawlIconElement.className = crawlIcon;
 
-export class StarWarsCrawl implements IOgModule {
+export class StarWarsCrawl extends OgBaseModule {
+    public get name(): string {
+        return 'StarWarsCrawl';
+    }
     private ogGameModuleSocket = new OgGameModuleSocket(enricherName);
     private crawlUrlPrefix = new OgSetting<string>('crawlUrlPrefix', 'https://crawls.rpg.solutions/crawls/play/', {
         scope: 'world',

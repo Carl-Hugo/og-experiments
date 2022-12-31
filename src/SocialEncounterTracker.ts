@@ -1,4 +1,4 @@
-import { IOgModule } from './IModule';
+import { IOgModule, OgBaseModule } from './IModule';
 import { OgSetting } from './OgSettings';
 import { logText, registerGameExtensions } from './utils';
 class SocialEncounterTrackerForm extends FormApplication {
@@ -93,7 +93,10 @@ class SocialEncounterTrackerForm extends FormApplication {
     }
 }
 
-export class SocialEncounterTracker implements IOgModule {
+export class SocialEncounterTracker extends OgBaseModule {
+    public get name(): string {
+        return 'SocialEncounterTracker';
+    }
     private playerStrain: OgSetting<number> = new OgSetting<number>(
         'playerStrain',
         0,

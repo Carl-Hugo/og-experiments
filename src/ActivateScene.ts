@@ -1,8 +1,11 @@
-import { IOgModule } from './IModule';
+import { OgBaseModule } from './IModule';
 import { openJournalEntry } from './Journal/openJournalEntry';
 import { registerGameExtensions, logText } from './utils';
 
-export class ActivateScene implements IOgModule {
+export class ActivateScene extends OgBaseModule {
+    public get name(): string {
+        return 'ActivateScene';
+    }
     init(): void {
         logText('ActivateScene initiating');
 
