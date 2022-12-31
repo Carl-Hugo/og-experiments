@@ -66,16 +66,13 @@ module.exports = {
         // new ESLintPlugin({
         //     extensions: ['ts'],
         // }),
-        // new CopyPlugin({
-        //     patterns: [
-        //         {
-        //             from: 'static',
-        //             noErrorOnMissing: true,
-        //         },
-        //     ],
-        // }),
         new CopyPlugin({
-            patterns: [{ from: 'src' }],
+            patterns: [
+                {
+                    from: 'static',
+                    noErrorOnMissing: true,
+                },
+            ],
         }),
     ],
 };
