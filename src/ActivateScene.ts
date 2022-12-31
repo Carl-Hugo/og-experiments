@@ -1,16 +1,14 @@
 import { OgBaseModule } from './IModule';
 import { openJournalEntry } from './Journal/openJournalEntry';
-import { registerGameExtensions, logDebug } from './utils';
+import { registerGameExtensions } from './utils';
 
 export class ActivateScene extends OgBaseModule {
     public get name(): string {
         return 'ActivateScene';
     }
     init(): void {
-        logDebug('ActivateScene initiating');
-
         registerGameExtensions('flow', {
-            activateScene,
+            activateScene: this.activateScene,
         });
 
         (CONFIG as any).TextEditor.enrichers.push({
@@ -52,26 +50,23 @@ export class ActivateScene extends OgBaseModule {
             var target = e.target as any;
             if (target && target.dataset && target.dataset.type === 'ActivateScene' && target.dataset.broken === 'false') {
                 e.preventDefault();
-                await activateScene(target.dataset.id);
+                await this.activateScene(target.dataset.id);
             }
         });
-
-        logDebug('ActivateScene initiated');
-    }
-    ready(): void {}
-}
-
-export async function activateScene(targetSceneId: string) {
-    logDebug(`ActivateScene activating: ${targetSceneId}`);
-
-    const currentSceneJournal = (game as Game).scenes!.active!.journal;
-    if (currentSceneJournal && currentSceneJournal.sheet) {
-        currentSceneJournal.sheet.close();
     }
 
-    const targetScene = (game as Game).scenes!.get(targetSceneId);
-    if (targetScene) {
-        await targetScene.activate();
-        openJournalEntry(targetScene.journal);
+    async activateScene(targetSceneId: string) {
+        this.logDebug(`ActivateScene activating: ${targetSceneId}`);
+
+        const currentSceneJournal = (game as Game).scenes!.active!.journal;
+        if (currentSceneJournal && currentSceneJournal.sheet) {
+            currentSceneJournal.sheet.close();
+        }
+
+        const targetScene = (game as Game).scenes!.get(targetSceneId);
+        if (targetScene) {
+            await targetScene.activate();
+            openJournalEntry(targetScene.journal);
+        }
     }
 }

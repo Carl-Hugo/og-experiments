@@ -1,3 +1,5 @@
+import { defaultLogger, ILogger } from './utils';
+
 export interface IOgModule {
     get name(): string;
     get description(): string | null;
@@ -6,12 +8,26 @@ export interface IOgModule {
     setup(): void;
     ready(): void;
 }
-
-export abstract class OgBaseModule implements IOgModule {
+export abstract class OgBaseModule implements IOgModule, ILogger {
     public abstract get name(): string;
     public get description(): string | null {
         return null;
     }
+    constructor(protected logger: ILogger = defaultLogger) {}
+
+    logDebug(...data: any[]): void {
+        this.logger.logDebug(`${this.name} |`, ...data);
+    }
+    logInfo(...data: any[]): void {
+        this.logger.logInfo(`${this.name} |`, ...data);
+    }
+    logWarn(...data: any[]): void {
+        this.logger.logWarn(`${this.name} |`, ...data);
+    }
+    logError(...data: any[]): void {
+        this.logger.logError(`${this.name} |`, ...data);
+    }
+
     /**
      * A hook event that fires as Foundry is initializing, right before any initialization tasks have begun.
      */
@@ -28,34 +44,4 @@ export abstract class OgBaseModule implements IOgModule {
      * A hook event that fires when the game is fully ready.
      */
     public ready(): void {}
-}
-
-class OgModuleManager {
-    constructor(private modules: IOgModule[]) {
-        this.registerHooks();
-    }
-
-    private registerHooks() {
-        Hooks.once('init', async function () {
-            // logText('initiating');
-            // for (let index = 0; index < modules.length; index++) {
-            //     const module = modules[index];
-            //     if (module.init) {
-            //         module.init();
-            //     }
-            // }
-            // logText('initiated');
-        });
-    }
-    // const modules = [
-    //     new JournalModule(),
-    //     new ActivateScene(),
-    //     new OpenSceneNotes(),
-    //     new SocialEncounterTracker(),
-    //     new ServerPush(),
-    //     new Reload(),
-    //     new StarWarsCrawl(),
-    //     globalSettings,
-    //     //new VehicleMovement()
-    // ] as IOgModule[];
 }

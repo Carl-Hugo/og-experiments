@@ -1,5 +1,5 @@
-import { IOgModule, OgBaseModule } from './IModule';
-import { logDebug } from './utils';
+import { OgBaseModule } from './IModule';
+import { defaultLogger, ILogger } from './utils';
 
 export const namespace = 'og-experiments';
 
@@ -12,14 +12,15 @@ export class OgSetting<T> {
         private key: string,
         private defaultValue: T,
         private settings: InexactPartial<Omit<SettingConfig<T>, 'key' | 'namespace'>>,
-        init: (setting: OgSetting<T>) => void = () => {}
+        init: (setting: OgSetting<T>) => void = () => {},
+        private logger: ILogger = defaultLogger
     ) {
         this._value = defaultValue;
         init(this);
     }
 
     public ready(): void {
-        logDebug('OgSetting getting ready', this.key, this.defaultValue);
+        this.logger.logDebug('OgSetting getting ready', this.key, this.defaultValue);
         (game as Game).settings.register(namespace, this.key, {
             ...{
                 scope: 'client',
@@ -34,7 +35,7 @@ export class OgSetting<T> {
             ...this.settings,
         });
         this.value = (game as Game).settings.get(namespace, this.key) as T;
-        logDebug('OgSetting is ready', {
+        this.logger.logDebug('OgSetting is ready', {
             key: this.key,
             defaultValue: this.defaultValue,
             value: this.value,

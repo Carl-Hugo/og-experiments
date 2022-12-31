@@ -1,6 +1,7 @@
-import { IOgModule, OgBaseModule } from './IModule';
+import { OgBaseModule } from './IModule';
 import { OgSetting } from './OgSettings';
-import { logDebug, registerGameExtensions } from './utils';
+import { defaultLogger, ILogger, registerGameExtensions } from './utils';
+
 class SocialEncounterTrackerForm extends FormApplication {
     private playerStrain: OgSetting<number>;
     private maxPlayerStrain: OgSetting<number>;
@@ -8,7 +9,7 @@ class SocialEncounterTrackerForm extends FormApplication {
     private maxTargetStrain: OgSetting<number>;
     private displayTargetToPlayers: OgSetting<boolean>;
 
-    constructor(object = {}, options = {}) {
+    constructor(object = {}, options = {}, private logger: ILogger = defaultLogger) {
         super(object, options);
         this.playerStrain = (options as any).playerStrain as OgSetting<number>;
         this.maxPlayerStrain = (options as any).maxPlayerStrain as OgSetting<number>;
@@ -88,7 +89,7 @@ class SocialEncounterTrackerForm extends FormApplication {
     }
 
     protected _updateObject(event: Event, formData?: object | undefined): Promise<unknown> {
-        logDebug('SocialEncounterTracker | _updateObject', event, formData);
+        this.logger.logDebug('SocialEncounterTracker | _updateObject', event, formData);
         return Promise.resolve();
     }
 }
@@ -159,9 +160,7 @@ export class SocialEncounterTracker extends OgBaseModule {
         maxTargetStrain: this.maxTargetStrain,
         displayTargetToPlayers: this.displayTargetToPlayers,
     });
-    init(): void {}
     ready(): void {
-        logDebug('SocialEncounterTracker getting ready');
         this.playerStrain.ready();
         this.maxPlayerStrain.ready();
         this.targetStrain.ready();
@@ -173,7 +172,6 @@ export class SocialEncounterTracker extends OgBaseModule {
             internal: { form: this.form },
         });
         this.form.render(true);
-        logDebug('SocialEncounterTracker is ready');
     }
 }
 

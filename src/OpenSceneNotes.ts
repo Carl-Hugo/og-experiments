@@ -1,7 +1,7 @@
 import { IOgModule, OgBaseModule } from './IModule';
 import { OgSetting } from './OgSettings';
 import { openJournalEntry } from './Journal/openJournalEntry';
-import { registerGameExtensions, logDebug } from './utils';
+import { registerGameExtensions } from './utils';
 
 export class OpenSceneNotes extends OgBaseModule {
     public get name(): string {
@@ -14,20 +14,16 @@ export class OpenSceneNotes extends OgBaseModule {
     });
 
     init(): void {
-        logDebug('OpenSceneNotes initiating');
         registerGameExtensions('flow', {
             openSceneNotes,
         });
-        logDebug('OpenSceneNotes initiated');
     }
 
     ready(): void {
-        logDebug('OpenSceneNotes is getting ready');
         this.openSceneNotesOnReady.ready();
         if (this.openSceneNotesOnReady.value) {
             openSceneNotes();
         }
-        logDebug('OpenSceneNotes is ready');
     }
 }
 

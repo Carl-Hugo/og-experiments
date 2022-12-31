@@ -1,5 +1,5 @@
 import { namespace } from './OgSettings';
-import { logError, logDebug } from './utils';
+import { defaultLogger, ILogger } from './utils';
 
 const foundryModuleEventName = `module.${namespace}`;
 
@@ -10,24 +10,24 @@ export interface OgGameModuleSocketEvent<T> {
 
 export class OgGameModuleSocket {
     private registrations: { action: string; delegate: (payload: any) => void | Promise<void> }[] = [];
-    constructor(public ogModuleName: string) {}
+    constructor(public ogModuleName: string, private logger: ILogger = defaultLogger) {}
 
     registerAction<T>(action: string, delegate: (payload: T) => void | Promise<void>, thisArgs: unknown = undefined) {
         const g = game as Game;
         if (!g.socket) {
-            logError('registerToSocketEvent: The game socket was not found.');
+            this.logger.logError('registerToSocketEvent: The game socket was not found.');
             return;
         }
-        logDebug(`Registering socket event ${this.ogModuleName}`);
+        this.logger.logDebug(`Registering socket event ${this.ogModuleName}`);
 
         if (thisArgs) {
-            logDebug(`OgGameModuleSocket:registerAction:${action} | Binding delegate.`, thisArgs);
+            this.logger.logDebug(`OgGameModuleSocket:registerAction:${action} | Binding delegate.`, thisArgs);
             this.registrations.push({ action, delegate: (payload: T) => delegate.apply(thisArgs, [payload]) });
         } else {
             this.registrations.push({ action, delegate });
         }
         g.socket.on(foundryModuleEventName, async (receivedEvent: InternalSocketEvent) => {
-            logDebug('Socket event received: ', receivedEvent);
+            this.logger.logDebug('Socket event received: ', receivedEvent);
             if (receivedEvent.name === this.ogModuleName && receivedEvent.action == action) {
                 delegate.apply(thisArgs, [receivedEvent.payload]);
             }
@@ -37,7 +37,7 @@ export class OgGameModuleSocket {
     broadcast<T>(event: OgGameModuleSocketEvent<T>) {
         const g = game as Game;
         if (!g.socket) {
-            logError('broadcastSocketEvent: The game socket was not found.');
+            this.logger.logError('broadcastSocketEvent: The game socket was not found.');
             return;
         }
         g.socket.emit(foundryModuleEventName, { ...event, name: this.ogModuleName } as InternalSocketEvent);
@@ -49,7 +49,7 @@ export class OgGameModuleSocket {
         if (registration) {
             registration.delegate(event.payload);
         } else {
-            logError('Impossible to broadcast the event to self.', registration, event);
+            this.logger.logError('Impossible to broadcast the event to self.', registration, event);
         }
     }
 }

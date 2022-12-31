@@ -1,11 +1,10 @@
-import { IOgModule, OgBaseModule } from './IModule';
+import { OgBaseModule } from './IModule';
 import { registerGameExtensions } from './utils';
 
 export class Reload extends OgBaseModule {
     public get name(): string {
         return 'Reload';
     }
-    init(): void {}
     ready(): void {
         registerGameExtensions('reload', {
             // scripts: () => {

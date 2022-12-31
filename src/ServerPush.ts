@@ -1,14 +1,13 @@
-// const signalR = require('@microsoft/signalr');
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import { IOgModule, OgBaseModule } from './IModule';
+import { OgBaseModule } from './IModule';
 import Keycloak, { KeycloakAdapter } from 'keycloak-js';
-import { registerGameExtensions, logError, logDebug, logWarn } from './utils';
+import { defaultLogger, ILogger, registerGameExtensions } from './utils';
 import { OgSetting } from './OgSettings';
 
 class AuthService {
     private _keycloak: Keycloak;
 
-    constructor() {
+    constructor(private logger: ILogger = defaultLogger) {
         this._keycloak = new Keycloak({
             url: 'http://localhost:8080/',
             realm: 'OgAuth',
@@ -45,7 +44,7 @@ class AuthService {
                 enableLogging: true,
             })
             .then(function (authenticated) {
-                logDebug(authenticated ? 'authenticated' : 'not authenticated');
+                me.logger.logDebug(authenticated ? 'authenticated' : 'not authenticated');
                 me.authenticated = authenticated;
                 if (authenticated) {
                     me.token = me._keycloak.token;
@@ -69,13 +68,7 @@ export class ServerPush extends OgBaseModule {
         scope: 'world',
     });
 
-    async init(): Promise<void> {
-        logDebug('ServerPush initializing');
-        logDebug('ServerPush initialized');
-    }
-
     async ready(): Promise<void> {
-        logDebug('ServerPush getting ready');
         this.enableServerPush.ready();
 
         if (!this.enableServerPush.value) {
@@ -84,12 +77,12 @@ export class ServerPush extends OgBaseModule {
 
         await this.auth.init();
         if (!this.auth.authenticated) {
-            logError("Not authenticated! Can't proceed with ServerPush.ready.");
+            this.logError("Not authenticated! Can't proceed with ServerPush.ready.");
             return;
         }
         var user = this.auth.user;
         if (!user.tokenParsed) {
-            logError('The `tokenParsed` property is not defined.');
+            this.logError('The `tokenParsed` property is not defined.');
             return;
         }
 
@@ -120,27 +113,25 @@ export class ServerPush extends OgBaseModule {
         });
 
         connection.on('pong', () => {
-            logDebug('pong');
+            this.logDebug('pong');
         });
 
         connection.on('execute', this.execute);
         connection.on('executeAsync', this.executeAsync);
 
         connection.onclose((error) => {
-            logWarn('connection.onclose', error);
+            this.logWarn('connection.onclose', error);
         });
 
         connection.start();
-
-        logDebug('ServerPush is ready');
     }
 
     async execute(options: ExecuteOptions, user: ExecuteUser): Promise<void> {
-        logDebug('ServerPush.execute', options, user);
+        this.logDebug('ServerPush.execute', options, user);
         eval(options.command);
     }
     async executeAsync(options: ExecuteOptions, user: ExecuteUser): Promise<void> {
-        logDebug('ServerPush.executeAsync', options, user);
+        this.logDebug('ServerPush.executeAsync', options, user);
         await new Promise((resolve, reject) => eval(options.command));
     }
 }
