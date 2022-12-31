@@ -1,5 +1,5 @@
 import { namespace } from './OgSettings';
-import { logError, logText } from './utils';
+import { logError, logDebug } from './utils';
 
 const foundryModuleEventName = `module.${namespace}`;
 
@@ -18,16 +18,16 @@ export class OgGameModuleSocket {
             logError('registerToSocketEvent: The game socket was not found.');
             return;
         }
-        logText(`Registering socket event ${this.ogModuleName}`);
+        logDebug(`Registering socket event ${this.ogModuleName}`);
 
         if (thisArgs) {
-            logText(`OgGameModuleSocket:registerAction:${action} | Binding delegate.`, thisArgs);
+            logDebug(`OgGameModuleSocket:registerAction:${action} | Binding delegate.`, thisArgs);
             this.registrations.push({ action, delegate: (payload: T) => delegate.apply(thisArgs, [payload]) });
         } else {
             this.registrations.push({ action, delegate });
         }
         g.socket.on(foundryModuleEventName, async (receivedEvent: InternalSocketEvent) => {
-            logText('Socket event received: ', receivedEvent);
+            logDebug('Socket event received: ', receivedEvent);
             if (receivedEvent.name === this.ogModuleName && receivedEvent.action == action) {
                 delegate.apply(thisArgs, [receivedEvent.payload]);
             }

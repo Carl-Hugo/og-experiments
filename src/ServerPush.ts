@@ -2,7 +2,7 @@
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { IOgModule, OgBaseModule } from './IModule';
 import Keycloak, { KeycloakAdapter } from 'keycloak-js';
-import { registerGameExtensions, logError, logText, logWarn } from './utils';
+import { registerGameExtensions, logError, logDebug, logWarn } from './utils';
 import { OgSetting } from './OgSettings';
 
 class AuthService {
@@ -45,7 +45,7 @@ class AuthService {
                 enableLogging: true,
             })
             .then(function (authenticated) {
-                logText(authenticated ? 'authenticated' : 'not authenticated');
+                logDebug(authenticated ? 'authenticated' : 'not authenticated');
                 me.authenticated = authenticated;
                 if (authenticated) {
                     me.token = me._keycloak.token;
@@ -70,12 +70,12 @@ export class ServerPush extends OgBaseModule {
     });
 
     async init(): Promise<void> {
-        logText('ServerPush initializing');
-        logText('ServerPush initialized');
+        logDebug('ServerPush initializing');
+        logDebug('ServerPush initialized');
     }
 
     async ready(): Promise<void> {
-        logText('ServerPush getting ready');
+        logDebug('ServerPush getting ready');
         this.enableServerPush.ready();
 
         if (!this.enableServerPush.value) {
@@ -120,7 +120,7 @@ export class ServerPush extends OgBaseModule {
         });
 
         connection.on('pong', () => {
-            logText('pong');
+            logDebug('pong');
         });
 
         connection.on('execute', this.execute);
@@ -132,15 +132,15 @@ export class ServerPush extends OgBaseModule {
 
         connection.start();
 
-        logText('ServerPush is ready');
+        logDebug('ServerPush is ready');
     }
 
     async execute(options: ExecuteOptions, user: ExecuteUser): Promise<void> {
-        logText('ServerPush.execute', options, user);
+        logDebug('ServerPush.execute', options, user);
         eval(options.command);
     }
     async executeAsync(options: ExecuteOptions, user: ExecuteUser): Promise<void> {
-        logText('ServerPush.executeAsync', options, user);
+        logDebug('ServerPush.executeAsync', options, user);
         await new Promise((resolve, reject) => eval(options.command));
     }
 }

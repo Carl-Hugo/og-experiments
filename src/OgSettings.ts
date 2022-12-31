@@ -1,5 +1,5 @@
 import { IOgModule, OgBaseModule } from './IModule';
-import { logText } from './utils';
+import { logDebug } from './utils';
 
 export const namespace = 'og-experiments';
 
@@ -19,7 +19,7 @@ export class OgSetting<T> {
     }
 
     public ready(): void {
-        logText('OgSetting getting ready', this.key, this.defaultValue);
+        logDebug('OgSetting getting ready', this.key, this.defaultValue);
         (game as Game).settings.register(namespace, this.key, {
             ...{
                 scope: 'client',
@@ -34,7 +34,7 @@ export class OgSetting<T> {
             ...this.settings,
         });
         this.value = (game as Game).settings.get(namespace, this.key) as T;
-        logText('OgSetting is ready', {
+        logDebug('OgSetting is ready', {
             key: this.key,
             defaultValue: this.defaultValue,
             value: this.value,

@@ -1,7 +1,7 @@
 import { OgBaseModule } from './IModule';
 import { namespace, OgSetting } from './OgSettings';
 import { OgGameModuleSocket } from './OgGameModuleSocket';
-import { logError, logText, registerGameExtensions } from './utils';
+import { logError, logDebug, registerGameExtensions } from './utils';
 
 const defaultCrawlUrlPrefix = 'https://crawls.rpg.solutions/crawls/play/';
 const debugCrawlUrlPrefix = 'http://localhost:4200/crawls/play/';
@@ -42,7 +42,7 @@ export class StarWarsCrawl extends OgBaseModule {
     });
 
     init(): void {
-        logText('StarWarsCrawl initiating');
+        logDebug('StarWarsCrawl initiating');
 
         registerGameExtensions('crawl', {
             loadCrawl: this.loadCrawl,
@@ -54,7 +54,7 @@ export class StarWarsCrawl extends OgBaseModule {
         (CONFIG as any).TextEditor.enrichers.push({
             pattern: /@StarWarsCrawl\[([^\]]+)\](?:{([^}]+)})?/gm,
             enricher: (match: any[], options: any) => {
-                logText('StarWarsCrawl enricher');
+                logDebug('StarWarsCrawl enricher');
                 let [url, name] = match.slice(1, 3);
                 const data = {
                     name: name,
@@ -128,7 +128,7 @@ export class StarWarsCrawl extends OgBaseModule {
             var target = e.target as any;
             if (target && target.dataset && target.dataset.type === enricherName && target.dataset.socketAction) {
                 e.preventDefault();
-                logText('Click: ', enricherName, target.dataset.socketAction);
+                logDebug('Click: ', enricherName, target.dataset.socketAction);
                 this.ogGameModuleSocket.broadcastToAll<CrawlPayload>({
                     action: target.dataset.socketAction,
                     payload: {
@@ -169,21 +169,21 @@ export class StarWarsCrawl extends OgBaseModule {
             disableElement(CrawlActions.close, true);
         });
 
-        logText('StarWarsCrawl initiated');
+        logDebug('StarWarsCrawl initiated');
         function disableElement(action: CrawlActions, disabled: boolean) {
             document.querySelectorAll(`.og-crawl-button-${action}`).forEach((el) => ((el as HTMLButtonElement).disabled = disabled));
         }
     }
 
     ready(): void {
-        logText('StarWarsCrawl is getting ready');
+        logDebug('StarWarsCrawl is getting ready');
         this.crawlUrlPrefix.ready();
         this.restrictCrawlsControlsToGM.ready();
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.open, this.loadCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.play, this.playCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.stop, this.stopCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.close, this.unloadCrawl, this);
-        logText('StarWarsCrawl is ready');
+        logDebug('StarWarsCrawl is ready');
     }
 
     stopCrawl(payload: CrawlPayload) {
@@ -200,13 +200,13 @@ export class StarWarsCrawl extends OgBaseModule {
 
     loadCrawl(payload: CrawlPayload) {
         if (hasIframe()) {
-            logText('The iframe is already there; cannot add.');
+            logDebug('The iframe is already there; cannot add.');
             return;
         }
         const url = this.crawlUrlPrefix.value + payload.crawlId;
         iframe.src = url;
         iframe.addEventListener('load', (e) => {
-            logText('Crawl iframe is loaded', url);
+            logDebug('Crawl iframe is loaded', url);
             if (iframe.contentWindow == null) {
                 logError('iframe.contentWindow is null');
                 return;
@@ -215,30 +215,30 @@ export class StarWarsCrawl extends OgBaseModule {
         document.body.appendChild(iframe);
 
         addButtonBar(payload.name);
-        logText('loadCrawl', payload);
+        logDebug('loadCrawl', payload);
     }
 
     unloadCrawl(payload: CrawlPayload) {
         if (!hasIframe()) {
-            logText('The iframe is not present; cannot remove.');
+            logDebug('The iframe is not present; cannot remove.');
             return;
         }
         document.body.removeChild(iframe);
 
         removeGMButtonBar(payload.name);
-        logText('unloadCrawl', payload);
+        logDebug('unloadCrawl', payload);
     }
 }
 
 function addButtonBar(name: string) {
-    logText('addButtonBar');
+    logDebug('addButtonBar');
 
     const buttonBar = findButtonBar(name);
     const controlsBar = wrapButtonBarWithContainer(buttonBar);
     document.body.appendChild(controlsBar);
 }
 function removeGMButtonBar(name: string) {
-    logText('removeButtonBar');
+    logDebug('removeButtonBar');
 
     const controlsBar = document.getElementById('og-crawl-controls-container');
     document.body.removeChild(controlsBar as Node);

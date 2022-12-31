@@ -1,4 +1,4 @@
-import { logError, logText } from '../utils';
+import { logError, logDebug } from '../utils';
 
 export async function showTemporaryJournalEntry(options: ICreateAndShowTemporaryJournalEntry): Promise<void> {
     const entry = await JournalEntry.create(
@@ -26,7 +26,7 @@ export async function showTemporaryJournalEntry(options: ICreateAndShowTemporary
         return;
     }
 
-    logText(`Journal entry '${options.name}' created.`, entry);
+    logDebug(`Journal entry '${options.name}' created.`, entry);
     await entry.sheet?.render(true);
 }
 

@@ -1,13 +1,13 @@
 import { OgBaseModule } from './IModule';
 import { openJournalEntry } from './Journal/openJournalEntry';
-import { registerGameExtensions, logText } from './utils';
+import { registerGameExtensions, logDebug } from './utils';
 
 export class ActivateScene extends OgBaseModule {
     public get name(): string {
         return 'ActivateScene';
     }
     init(): void {
-        logText('ActivateScene initiating');
+        logDebug('ActivateScene initiating');
 
         registerGameExtensions('flow', {
             activateScene,
@@ -56,13 +56,13 @@ export class ActivateScene extends OgBaseModule {
             }
         });
 
-        logText('ActivateScene initiated');
+        logDebug('ActivateScene initiated');
     }
     ready(): void {}
 }
 
 export async function activateScene(targetSceneId: string) {
-    logText(`ActivateScene activating: ${targetSceneId}`);
+    logDebug(`ActivateScene activating: ${targetSceneId}`);
 
     const currentSceneJournal = (game as Game).scenes!.active!.journal;
     if (currentSceneJournal && currentSceneJournal.sheet) {

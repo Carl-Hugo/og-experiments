@@ -2,7 +2,7 @@ import { namespace } from './OgSettings';
 
 // Console wrappers
 const prefix = `${namespace} |`;
-export function logText(...data: any[]) {
+export function logDebug(...data: any[]) {
     console.debug(prefix, ...data);
 }
 export function logWarn(...data: any[]) {

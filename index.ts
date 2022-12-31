@@ -1,4 +1,4 @@
-import { logText } from './src/utils';
+import { logDebug } from './src/utils';
 // import { VehicleMovement } from './src/movement.js';
 import { ServerPush } from './src/ServerPush';
 import { IOgModule } from './src/IModule';
@@ -23,7 +23,7 @@ const modules = [
 ] as IOgModule[];
 
 Hooks.once('init', async function () {
-    logText('initiating');
+    logDebug('initiating');
 
     for (let index = 0; index < modules.length; index++) {
         const module = modules[index];
@@ -32,18 +32,18 @@ Hooks.once('init', async function () {
         }
     }
 
-    logText('initiated');
+    logDebug('initiated');
 });
 
 Hooks.once('ready', async function () {
-    logText('readying');
+    logDebug('readying');
     for (let index = 0; index < modules.length; index++) {
         const module = modules[index];
         if (module.ready) {
             module.ready();
         }
     }
-    logText('ready');
+    logDebug('ready');
 });
 
 if (process.env.NODE_ENV === 'development') {
