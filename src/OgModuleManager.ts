@@ -4,19 +4,19 @@ import { IOgModule } from './IModule';
 export class OgModuleManager {
     private logger: ILogger;
     constructor(private modules: IOgModule[], logger: ILogger) {
-        this.logger = logger.openSession('OgModuleManager');
+        this.logger = logger.createScope('OgModuleManager');
         this.registerHooks();
     }
 
     private registerHooks() {
         this.logger.logDebug('registering hooks');
         const modules = this.modules;
-        const logger = this.logger.openSession('registerHooks');
+        const logger = this.logger.createScope('registerHooks');
         Hooks.once('init', async function () {
             logger.logDebug('initiating');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
-                const moduleLogger = logger.openSession(module.name);
+                const moduleLogger = logger.createScope(module.name);
                 moduleLogger.logDebug('initiating');
                 module.init();
                 moduleLogger.logDebug('initiated');
@@ -27,7 +27,7 @@ export class OgModuleManager {
             logger.logDebug('initiating i18n');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
-                const moduleLogger = logger.openSession(module.name);
+                const moduleLogger = logger.createScope(module.name);
                 moduleLogger.logDebug('initiating i18n');
                 module.i18nInit();
                 moduleLogger.logDebug('i18n initiated');
@@ -38,7 +38,7 @@ export class OgModuleManager {
             logger.logDebug('setting up');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
-                const moduleLogger = logger.openSession(module.name);
+                const moduleLogger = logger.createScope(module.name);
                 moduleLogger.logDebug('setting up');
                 module.setup();
                 moduleLogger.logDebug('setted up');
@@ -49,7 +49,7 @@ export class OgModuleManager {
             logger.logDebug('getting ready');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
-                const moduleLogger = logger.openSession(module.name);
+                const moduleLogger = logger.createScope(module.name);
                 moduleLogger.logDebug('getting ready');
                 module.ready();
                 moduleLogger.logDebug('ready');

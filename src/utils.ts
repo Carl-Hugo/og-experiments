@@ -20,7 +20,7 @@ export interface ILogger {
     logInfo(...data: any[]): void;
     logWarn(...data: any[]): void;
     logError(...data: any[]): void;
-    openSession(state: string): ILogger;
+    createScope(scope: string): ILogger;
 }
 
 export class DefaultLoggerFactory {
@@ -44,8 +44,8 @@ class ConsoleLogger implements ILogger {
         console.info(...this.prefixes, ...data);
     }
 
-    openSession(state: string): ILogger {
-        return DefaultLoggerFactory.create(...this.prefixes, state);
+    createScope(scope: string): ILogger {
+        return DefaultLoggerFactory.create(...this.prefixes, scope);
     }
 }
 
