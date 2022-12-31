@@ -1,4 +1,4 @@
-import { defaultLogger, ILogger } from './utils';
+import { ILogger } from './utils';
 
 export interface IOgModule {
     get name(): string;
@@ -13,7 +13,7 @@ export abstract class OgBaseModule implements IOgModule, ILogger {
     public get description(): string | null {
         return null;
     }
-    constructor(protected logger: ILogger = defaultLogger) {}
+    constructor(protected logger: ILogger) {}
 
     logDebug(...data: any[]): void {
         this.logger.logDebug(`${this.name} |`, ...data);

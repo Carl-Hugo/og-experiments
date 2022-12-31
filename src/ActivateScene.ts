@@ -1,11 +1,12 @@
 import { OgBaseModule } from './IModule';
-import { openJournalEntry } from './Journal/openJournalEntry';
+import { OgJournalHelper } from './Journal';
 import { registerGameExtensions } from './utils';
 
 export class ActivateScene extends OgBaseModule {
     public get name(): string {
         return 'ActivateScene';
     }
+
     init(): void {
         registerGameExtensions('flow', {
             activateScene: this.activateScene,
@@ -56,7 +57,7 @@ export class ActivateScene extends OgBaseModule {
     }
 
     async activateScene(targetSceneId: string) {
-        this.logDebug(`ActivateScene activating: ${targetSceneId}`);
+        this.logDebug(`Activating: ${targetSceneId}`);
 
         const currentSceneJournal = (game as Game).scenes!.active!.journal;
         if (currentSceneJournal && currentSceneJournal.sheet) {
@@ -66,7 +67,7 @@ export class ActivateScene extends OgBaseModule {
         const targetScene = (game as Game).scenes!.get(targetSceneId);
         if (targetScene) {
             await targetScene.activate();
-            openJournalEntry(targetScene.journal);
+            OgJournalHelper.openJournalEntry(targetScene.journal, this.logger);
         }
     }
 }

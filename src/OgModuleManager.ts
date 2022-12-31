@@ -1,12 +1,13 @@
-import { ILogger, defaultLogger } from './utils';
+import { ILogger } from './utils';
 import { IOgModule } from './IModule';
 
 export class OgModuleManager {
-    constructor(private modules: IOgModule[], private logger: ILogger = defaultLogger) {
+    constructor(private modules: IOgModule[], private logger: ILogger) {
         this.registerHooks();
     }
 
     private registerHooks() {
+        this.logger.logDebug('OgModuleManager is registering hooks');
         const modules = this.modules;
         const logger = this.logger;
         Hooks.once('init', async function () {
@@ -41,5 +42,6 @@ export class OgModuleManager {
             }
             logger.logDebug('OgModuleManager is ready');
         });
+        this.logger.logDebug('OgModuleManager registered hooks');
     }
 }

@@ -1,7 +1,7 @@
-import { IOgModule, OgBaseModule } from './IModule';
+import { OgBaseModule } from './IModule';
+import { OgJournalHelper } from './Journal';
 import { OgSetting } from './OgSettings';
-import { openJournalEntry } from './Journal/openJournalEntry';
-import { registerGameExtensions } from './utils';
+import { ILogger, registerGameExtensions } from './utils';
 
 export class OpenSceneNotes extends OgBaseModule {
     public get name(): string {
@@ -13,21 +13,25 @@ export class OpenSceneNotes extends OgBaseModule {
         type: Boolean,
     });
 
+    constructor(logger: ILogger) {
+        super(logger);
+    }
+
     init(): void {
         registerGameExtensions('flow', {
-            openSceneNotes,
+            openSceneNotes: this.openSceneNotes,
         });
     }
 
     ready(): void {
         this.openSceneNotesOnReady.ready();
         if (this.openSceneNotesOnReady.value) {
-            openSceneNotes();
+            this.openSceneNotes();
         }
     }
-}
 
-export function openSceneNotes() {
-    const currentSceneJournal = (game as Game).scenes!.active!.journal;
-    openJournalEntry(currentSceneJournal);
+    openSceneNotes() {
+        const currentSceneJournal = (game as Game).scenes!.active!.journal;
+        OgJournalHelper.openJournalEntry(currentSceneJournal, this.logger);
+    }
 }

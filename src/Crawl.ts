@@ -1,7 +1,8 @@
 import { OgBaseModule } from './IModule';
-import { namespace, OgSetting } from './OgSettings';
+import { OgSetting } from './OgSettings';
 import { OgGameModuleSocket } from './OgGameModuleSocket';
 import { registerGameExtensions } from './utils';
+import { OgExperiment } from './OgExperiments';
 
 const defaultCrawlUrlPrefix = 'https://crawls.rpg.solutions/crawls/play/';
 const debugCrawlUrlPrefix = 'http://localhost:4200/crawls/play/';
@@ -27,7 +28,7 @@ export class StarWarsCrawl extends OgBaseModule {
     public get name(): string {
         return 'StarWarsCrawl';
     }
-    private ogGameModuleSocket = new OgGameModuleSocket(enricherName);
+    private ogGameModuleSocket = new OgGameModuleSocket(enricherName, this.logger);
     private crawlUrlPrefix = new OgSetting<string>('crawlUrlPrefix', 'https://crawls.rpg.solutions/crawls/play/', {
         scope: 'world',
         name: "Base Og's Crawls Central URL",
@@ -134,33 +135,33 @@ export class StarWarsCrawl extends OgBaseModule {
                         name: target.dataset.ogCrawlPlayerName,
                     },
                 });
-                document.dispatchEvent(new Event(`${namespace}:${enricherName}:${target.dataset.socketAction}`));
+                document.dispatchEvent(new Event(`${OgExperiment.namespace}:${enricherName}:${target.dataset.socketAction}`));
             }
         });
 
         // on open
-        document.addEventListener(`${namespace}:${enricherName}:${CrawlActions.open}`, () => {
+        document.addEventListener(`${OgExperiment.namespace}:${enricherName}:${CrawlActions.open}`, () => {
             disableElement(CrawlActions.open, true);
             disableElement(CrawlActions.play, false);
             disableElement(CrawlActions.stop, true);
             disableElement(CrawlActions.close, false);
         });
         // on play
-        document.addEventListener(`${namespace}:${enricherName}:${CrawlActions.play}`, () => {
+        document.addEventListener(`${OgExperiment.namespace}:${enricherName}:${CrawlActions.play}`, () => {
             disableElement(CrawlActions.open, true);
             disableElement(CrawlActions.play, true);
             disableElement(CrawlActions.stop, false);
             disableElement(CrawlActions.close, false);
         });
         // on stop
-        document.addEventListener(`${namespace}:${enricherName}:${CrawlActions.stop}`, () => {
+        document.addEventListener(`${OgExperiment.namespace}:${enricherName}:${CrawlActions.stop}`, () => {
             disableElement(CrawlActions.open, true);
             disableElement(CrawlActions.play, false);
             disableElement(CrawlActions.stop, true);
             disableElement(CrawlActions.close, false);
         });
         // on close
-        document.addEventListener(`${namespace}:${enricherName}:${CrawlActions.close}`, () => {
+        document.addEventListener(`${OgExperiment.namespace}:${enricherName}:${CrawlActions.close}`, () => {
             disableElement(CrawlActions.open, false);
             disableElement(CrawlActions.play, true);
             disableElement(CrawlActions.stop, true);

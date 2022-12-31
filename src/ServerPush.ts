@@ -1,13 +1,13 @@
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { OgBaseModule } from './IModule';
 import Keycloak, { KeycloakAdapter } from 'keycloak-js';
-import { defaultLogger, ILogger, registerGameExtensions } from './utils';
+import { ILogger, registerGameExtensions } from './utils';
 import { OgSetting } from './OgSettings';
 
 class AuthService {
     private _keycloak: Keycloak;
 
-    constructor(private logger: ILogger = defaultLogger) {
+    constructor(private logger: ILogger) {
         this._keycloak = new Keycloak({
             url: 'http://localhost:8080/',
             realm: 'OgAuth',
@@ -60,7 +60,7 @@ export class ServerPush extends OgBaseModule {
     public get name(): string {
         return 'ServerPush';
     }
-    private auth = new AuthService();
+    private auth = new AuthService(this.logger);
     private enableServerPush = new OgSetting<boolean>('enableServerPush', true, {
         name: 'Enable the ServerPush module?',
         hint: 'If enabled, the module will load and everyone will need to authenticate againt the KeyClock server.',

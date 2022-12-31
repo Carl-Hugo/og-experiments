@@ -1,7 +1,7 @@
-import { namespace } from './OgSettings';
-import { defaultLogger, ILogger } from './utils';
+import { OgExperiment } from './OgExperiments';
+import { ILogger } from './utils';
 
-const foundryModuleEventName = `module.${namespace}`;
+const foundryModuleEventName = `module.${OgExperiment.namespace}`;
 
 export interface OgGameModuleSocketEvent<T> {
     action: string;
@@ -10,7 +10,7 @@ export interface OgGameModuleSocketEvent<T> {
 
 export class OgGameModuleSocket {
     private registrations: { action: string; delegate: (payload: any) => void | Promise<void> }[] = [];
-    constructor(public ogModuleName: string, private logger: ILogger = defaultLogger) {}
+    constructor(public ogModuleName: string, private logger: ILogger) {}
 
     registerAction<T>(action: string, delegate: (payload: T) => void | Promise<void>, thisArgs: unknown = undefined) {
         const g = game as Game;

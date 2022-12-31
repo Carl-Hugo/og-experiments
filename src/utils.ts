@@ -1,7 +1,7 @@
-import { namespace } from './OgSettings';
+import { OgExperiment } from './OgExperiments';
 
 // Console wrappers
-const prefix = `${namespace} |`;
+const prefix = `${OgExperiment.namespace} |`;
 // export function logDebug(...data: any[]) {
 //     console.debug(prefix, ...data);
 // }
@@ -21,7 +21,7 @@ export interface ILogger {
     logWarn(...data: any[]): void;
     logError(...data: any[]): void;
 }
-class DefaultLogger implements ILogger {
+export class DefaultLogger implements ILogger {
     logDebug(...data: any[]) {
         console.debug(prefix, ...data);
     }
@@ -35,7 +35,6 @@ class DefaultLogger implements ILogger {
         console.info(prefix, ...data);
     }
 }
-export const defaultLogger: ILogger = new DefaultLogger();
 
 // Game extensions
 const gameExtensionsKey = 'og';
@@ -54,3 +53,6 @@ export function registerGameExtensions(key: string, setting: any) {
         ...setting,
     };
 }
+// export function getGameExtension<T>(key: string): T {
+//     return (game as any)[gameExtensionsKey][key] as T;
+// }

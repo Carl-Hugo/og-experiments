@@ -1,19 +1,18 @@
 import { OgBaseModule } from './IModule';
-import { defaultLogger, ILogger } from './utils';
-
-export const namespace = 'og-experiments';
+import { OgExperiment } from './OgExperiments';
+import { DefaultLogger, ILogger } from './utils';
 
 export class OgSetting<T> {
     private _value: T;
     public beforeUpdate: (setting: OgSetting<T>, value: T) => void = () => {};
     public afterUpdate: (setting: OgSetting<T>) => void = () => {};
+    private logger: ILogger = new DefaultLogger();
 
     constructor(
         private key: string,
         private defaultValue: T,
         private settings: InexactPartial<Omit<SettingConfig<T>, 'key' | 'namespace'>>,
-        init: (setting: OgSetting<T>) => void = () => {},
-        private logger: ILogger = defaultLogger
+        init: (setting: OgSetting<T>) => void = () => {}
     ) {
         this._value = defaultValue;
         init(this);
@@ -21,7 +20,7 @@ export class OgSetting<T> {
 
     public ready(): void {
         this.logger.logDebug('OgSetting getting ready', this.key, this.defaultValue);
-        (game as Game).settings.register(namespace, this.key, {
+        (game as Game).settings.register(OgExperiment.namespace, this.key, {
             ...{
                 scope: 'client',
                 config: true,
@@ -34,7 +33,7 @@ export class OgSetting<T> {
             },
             ...this.settings,
         });
-        this.value = (game as Game).settings.get(namespace, this.key) as T;
+        this.value = (game as Game).settings.get(OgExperiment.namespace, this.key) as T;
         this.logger.logDebug('OgSetting is ready', {
             key: this.key,
             defaultValue: this.defaultValue,
@@ -49,7 +48,7 @@ export class OgSetting<T> {
     public set value(value: T) {
         if (this._value != value) {
             this._value = value;
-            (game as Game).settings.set(namespace, this.key, value);
+            (game as Game).settings.set(OgExperiment.namespace, this.key, value);
         }
     }
 }
@@ -73,9 +72,7 @@ export class GlobalSettings extends OgBaseModule {
         type: Boolean,
     });
 
-    init(): void {}
     ready(): void {
         this.accessDeniedSilentlyFails.ready();
     }
 }
-export const globalSettings = new GlobalSettings();
