@@ -2,16 +2,18 @@ import { ILogger } from './utils';
 import { IOgModule } from './IModule';
 
 export class OgModuleManager {
-    constructor(private modules: IOgModule[], private logger: ILogger) {
+    private logger: ILogger;
+    constructor(private modules: IOgModule[], logger: ILogger) {
+        this.logger = logger.openSession('OgModuleManager');
         this.registerHooks();
     }
 
     private registerHooks() {
-        this.logger.logDebug('OgModuleManager is registering hooks');
+        this.logger.logDebug('registering hooks');
         const modules = this.modules;
-        const logger = this.logger;
+        const logger = this.logger.openSession('registerHooks');
         Hooks.once('init', async function () {
-            logger.logDebug('OgModuleManager is initiating');
+            logger.logDebug('initiating');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
                 const moduleLogger = logger.openSession(module.name);
@@ -19,10 +21,10 @@ export class OgModuleManager {
                 module.init();
                 moduleLogger.logDebug('initiated');
             }
-            logger.logDebug('OgModuleManager is initiated');
+            logger.logDebug('initiated');
         });
         Hooks.once('i18nInit', async function () {
-            logger.logDebug('OgModuleManager is initiating i18n');
+            logger.logDebug('initiating i18n');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
                 const moduleLogger = logger.openSession(module.name);
@@ -30,10 +32,10 @@ export class OgModuleManager {
                 module.i18nInit();
                 moduleLogger.logDebug('i18n initiated');
             }
-            logger.logDebug('OgModuleManager has initiated i18n');
+            logger.logDebug('initiated i18n');
         });
         Hooks.once('setup', async function () {
-            logger.logDebug('OgModuleManager is setuping');
+            logger.logDebug('setting up');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
                 const moduleLogger = logger.openSession(module.name);
@@ -41,10 +43,10 @@ export class OgModuleManager {
                 module.setup();
                 moduleLogger.logDebug('setted up');
             }
-            logger.logDebug('OgModuleManager is setup');
+            logger.logDebug('setted up');
         });
         Hooks.once('ready', async function () {
-            logger.logDebug('OgModuleManager is getting ready');
+            logger.logDebug('getting ready');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
                 const moduleLogger = logger.openSession(module.name);
@@ -52,8 +54,8 @@ export class OgModuleManager {
                 module.ready();
                 moduleLogger.logDebug('ready');
             }
-            logger.logDebug('OgModuleManager is ready');
+            logger.logDebug('ready');
         });
-        this.logger.logDebug('OgModuleManager registered hooks');
+        this.logger.logDebug('registered hooks');
     }
 }
