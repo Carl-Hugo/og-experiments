@@ -1,12 +1,10 @@
 import { OgBaseModule } from './IModule';
 import { OgExperiment } from './OgExperiments';
-import { DefaultLogger, ILogger } from './utils';
 
 export class OgSetting<T> {
     private _value: T;
     public beforeUpdate: (setting: OgSetting<T>, value: T) => void = () => {};
     public afterUpdate: (setting: OgSetting<T>) => void = () => {};
-    private logger: ILogger = new DefaultLogger();
 
     constructor(
         private key: string,
@@ -19,7 +17,7 @@ export class OgSetting<T> {
     }
 
     public ready(): void {
-        this.logger.logDebug('OgSetting getting ready', this.key, this.defaultValue);
+        OgExperiment.defaultLogger.logDebug('OgSetting getting ready', this.key, this.defaultValue);
         (game as Game).settings.register(OgExperiment.namespace, this.key, {
             ...{
                 scope: 'client',
@@ -34,7 +32,7 @@ export class OgSetting<T> {
             ...this.settings,
         });
         this.value = (game as Game).settings.get(OgExperiment.namespace, this.key) as T;
-        this.logger.logDebug('OgSetting is ready', {
+        OgExperiment.defaultLogger.logDebug('OgSetting is ready', {
             key: this.key,
             defaultValue: this.defaultValue,
             value: this.value,

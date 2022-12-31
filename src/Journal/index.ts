@@ -1,5 +1,5 @@
-import { globalSettings } from '../..';
 import { OgBaseModule } from '../IModule';
+import { OgExperiment } from '../OgExperiments';
 import { ILogger, registerGameExtensions } from '../utils';
 
 export class JournalModule extends OgBaseModule {
@@ -57,7 +57,7 @@ export class OgJournalHelper {
             if (!journal.testUserPermission((game as Game).user!, 'LIMITED')) {
                 const message = `You do not have permission to view this ${journal.documentName} journal entry.`;
                 logger.logWarn(message);
-                if (globalSettings.accessDeniedSilentlyFails.value) {
+                if (OgExperiment.globalSettings.accessDeniedSilentlyFails.value) {
                     return;
                 }
                 return ui.notifications!.warn(message);

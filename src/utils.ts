@@ -1,7 +1,7 @@
 import { OgExperiment } from './OgExperiments';
 
 // Console wrappers
-const prefix = `${OgExperiment.namespace} |`;
+// const prefix = `${OgExperiment.namespace} |`;
 // export function logDebug(...data: any[]) {
 //     console.debug(prefix, ...data);
 // }
@@ -20,19 +20,32 @@ export interface ILogger {
     logInfo(...data: any[]): void;
     logWarn(...data: any[]): void;
     logError(...data: any[]): void;
+    openSession(state: string): ILogger;
 }
-export class DefaultLogger implements ILogger {
+
+export class DefaultLoggerFactory {
+    static create(...states: string[]): ILogger {
+        return new ConsoleLogger(states);
+    }
+}
+class ConsoleLogger implements ILogger {
+    constructor(private prefixes: string[]) {}
+
     logDebug(...data: any[]) {
-        console.debug(prefix, ...data);
+        console.debug(...this.prefixes, ...data);
     }
     logWarn(...data: any[]) {
-        console.warn(prefix, ...data);
+        console.warn(...this.prefixes, ...data);
     }
     logError(...data: any[]) {
-        console.error(prefix, ...data);
+        console.error(...this.prefixes, ...data);
     }
     logInfo(...data: any[]) {
-        console.info(prefix, ...data);
+        console.info(...this.prefixes, ...data);
+    }
+
+    openSession(state: string): ILogger {
+        return DefaultLoggerFactory.create(...this.prefixes, state);
     }
 }
 

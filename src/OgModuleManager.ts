@@ -14,7 +14,10 @@ export class OgModuleManager {
             logger.logDebug('OgModuleManager is initiating');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
+                const moduleLogger = logger.openSession(module.name);
+                moduleLogger.logDebug('initiating');
                 module.init();
+                moduleLogger.logDebug('initiated');
             }
             logger.logDebug('OgModuleManager is initiated');
         });
@@ -22,7 +25,10 @@ export class OgModuleManager {
             logger.logDebug('OgModuleManager is initiating i18n');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
+                const moduleLogger = logger.openSession(module.name);
+                moduleLogger.logDebug('initiating i18n');
                 module.i18nInit();
+                moduleLogger.logDebug('i18n initiated');
             }
             logger.logDebug('OgModuleManager has initiated i18n');
         });
@@ -30,7 +36,10 @@ export class OgModuleManager {
             logger.logDebug('OgModuleManager is setuping');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
+                const moduleLogger = logger.openSession(module.name);
+                moduleLogger.logDebug('setting up');
                 module.setup();
+                moduleLogger.logDebug('setted up');
             }
             logger.logDebug('OgModuleManager is setup');
         });
@@ -38,7 +47,10 @@ export class OgModuleManager {
             logger.logDebug('OgModuleManager is getting ready');
             for (let index = 0; index < modules.length; index++) {
                 const module = modules[index];
+                const moduleLogger = logger.openSession(module.name);
+                moduleLogger.logDebug('getting ready');
                 module.ready();
+                moduleLogger.logDebug('ready');
             }
             logger.logDebug('OgModuleManager is ready');
         });

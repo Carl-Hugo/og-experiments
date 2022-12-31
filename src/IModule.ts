@@ -8,7 +8,7 @@ export interface IOgModule {
     setup(): void;
     ready(): void;
 }
-export abstract class OgBaseModule implements IOgModule, ILogger {
+export abstract class OgBaseModule implements IOgModule {
     public abstract get name(): string;
     public get description(): string | null {
         return null;
