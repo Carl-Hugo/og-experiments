@@ -11,12 +11,8 @@ import { OgExperiment } from './src/OgExperiments';
 import { DefaultLoggerFactory, ILogger } from './src/utils';
 import { GlobalSettings } from './src/OgSettings';
 
-const rootLogger: ILogger = DefaultLoggerFactory.create(OgExperiment.namespace);
+const rootLogger: ILogger = DefaultLoggerFactory.createRootLogger();
 const globalSettings = new GlobalSettings(rootLogger);
-
-// TODO: remove the defaultLogger field from OgExperiment and ensure an ILogger
-// is injected into OgSetting instead.
-OgExperiment.defaultLogger = rootLogger;
 
 // TODO: remove the globalSettings field from OgExperiment, remove its usage from
 // OgJournalHelper, and remove the OgJournalHelper class altogether (create a better
@@ -43,6 +39,7 @@ export const moduleManager = new OgModuleManager(modules, rootLogger);
 //             for (const template in _templateCache) {
 //                 if (Object.prototype.hasOwnProperty.call(_templateCache, template)) {
 //                     delete _templateCache[template];
+//                     console.debug(OgExperiment.namespace, 'HOT RELOAD', template);
 //                 }
 //             }
 //         }

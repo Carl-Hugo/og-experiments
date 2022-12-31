@@ -174,8 +174,6 @@ export class StarWarsCrawl extends OgBaseModule {
     }
 
     ready(): void {
-        this.crawlUrlPrefix.ready();
-        this.restrictCrawlsControlsToGM.ready();
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.open, this.loadCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.play, this.playCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.stop, this.stopCrawl, this);

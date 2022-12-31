@@ -1,10 +1,12 @@
 import { OgBaseModule } from './IModule';
 import { OgExperiment } from './OgExperiments';
+import { DefaultLoggerFactory, ILogger } from './utils';
 
 export class OgSetting<T> {
     private _value: T;
     public beforeUpdate: (setting: OgSetting<T>, value: T) => void = () => {};
     public afterUpdate: (setting: OgSetting<T>) => void = () => {};
+    private logger: ILogger;
 
     constructor(
         private key: string,
@@ -12,12 +14,14 @@ export class OgSetting<T> {
         private settings: InexactPartial<Omit<SettingConfig<T>, 'key' | 'namespace'>>,
         init: (setting: OgSetting<T>) => void = () => {}
     ) {
+        this.logger = DefaultLoggerFactory.createRootLogger().createScope('OgSetting').createScope(this.key);
         this._value = defaultValue;
         init(this);
+        Hooks.once('ready', () => this.ready.apply(this));
     }
 
-    public ready(): void {
-        OgExperiment.defaultLogger.logDebug('OgSetting getting ready', this.key, this.defaultValue);
+    private ready(): void {
+        this.logger.logDebug('getting ready', this.key, this.defaultValue);
         (game as Game).settings.register(OgExperiment.namespace, this.key, {
             ...{
                 scope: 'client',
@@ -32,7 +36,7 @@ export class OgSetting<T> {
             ...this.settings,
         });
         this.value = (game as Game).settings.get(OgExperiment.namespace, this.key) as T;
-        OgExperiment.defaultLogger.logDebug('OgSetting is ready', {
+        this.logger.logDebug('ready', {
             key: this.key,
             defaultValue: this.defaultValue,
             value: this.value,
@@ -69,8 +73,4 @@ export class GlobalSettings extends OgBaseModule {
         If you have no clue what this is, chances are you should not worry about it.`,
         type: Boolean,
     });
-
-    ready(): void {
-        this.accessDeniedSilentlyFails.ready();
-    }
 }

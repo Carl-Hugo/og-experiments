@@ -19,7 +19,6 @@ class SocialEncounterTrackerForm extends FormApplication {
     }
 
     private get isGM(): boolean {
-        // return true;
         return (game as Game).user!.isGM;
     }
 
@@ -165,11 +164,6 @@ export class SocialEncounterTracker extends OgBaseModule {
         this.logger
     );
     ready(): void {
-        this.playerStrain.ready();
-        this.maxPlayerStrain.ready();
-        this.targetStrain.ready();
-        this.maxTargetStrain.ready();
-        this.displayTargetToPlayers.ready();
         registerGameExtensions('SocialEncounterTracker', {
             open: (force: boolean = true) => this.form.render(force),
             close: () => this.form.close(),

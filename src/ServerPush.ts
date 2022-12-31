@@ -69,8 +69,6 @@ export class ServerPush extends OgBaseModule {
     });
 
     async ready(): Promise<void> {
-        this.enableServerPush.ready();
-
         if (!this.enableServerPush.value) {
             return;
         }

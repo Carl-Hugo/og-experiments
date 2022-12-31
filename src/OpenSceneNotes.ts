@@ -24,7 +24,6 @@ export class OpenSceneNotes extends OgBaseModule {
     }
 
     ready(): void {
-        this.openSceneNotesOnReady.ready();
         if (this.openSceneNotesOnReady.value) {
             this.openSceneNotes();
         }
