@@ -1,5 +1,5 @@
 import { GlobalSettings } from './OgSettings';
-import { ILogger } from './utils';
+import PackageInfo from '../module.json' assert { type: 'json' };
 
 export interface IOgExperiment {
     namespace: string;
@@ -7,7 +7,7 @@ export interface IOgExperiment {
 }
 
 export const OgExperiment: IOgExperiment = {
-    namespace: 'og-experiments',
+    namespace: PackageInfo.name,
     // @ts-ignore
     globalSettings: null,
 };
