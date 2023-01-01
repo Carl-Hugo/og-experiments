@@ -225,8 +225,11 @@ export class StarWarsCrawl extends OgBaseModule {
 
     private addButtonBar(name: string) {
         this.logDebug('addButtonBar');
-
         const buttonBar = findButtonBar(name);
+        if (!buttonBar) {
+            this.logDebug('buttonBar was not found. This is normal if you are not the person who opened the Crawl.');
+            return;
+        }
         const controlsBar = wrapButtonBarWithContainer(buttonBar);
         document.body.appendChild(controlsBar);
     }
@@ -234,11 +237,16 @@ export class StarWarsCrawl extends OgBaseModule {
         this.logDebug('removeButtonBar');
 
         const controlsBar = document.getElementById('og-crawl-controls-container');
-        document.body.removeChild(controlsBar as Node);
+        if (controlsBar) {
+            document.body.removeChild(controlsBar as Node);
+        }
     }
 }
 
 function wrapButtonBarWithContainer(buttonBar: HTMLElement): HTMLElement {
+    if (!buttonBar) {
+        throw new Error('Argument buttonBar must not be null.');
+    }
     const container = document.createElement('div');
     container.id = 'og-crawl-controls-container';
     container.style.zIndex = '1000';
