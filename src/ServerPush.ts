@@ -11,7 +11,7 @@ class AuthService {
         this._keycloak = new Keycloak({
             url: 'http://localhost:8080/',
             realm: 'OgAuth',
-            clientId: 'og-server',
+            clientId: 'og-foundry-vtt-module',
         });
     }
 
@@ -51,7 +51,7 @@ class AuthService {
                 }
             })
             .catch(function (e: any) {
-                console.error('failed to initialize', e);
+                me.logger.logError('failed to initialize', e);
             });
     }
 }
@@ -114,8 +114,8 @@ export class ServerPush extends OgBaseModule {
             this.logDebug('pong');
         });
 
-        connection.on('execute', this.execute);
-        connection.on('executeAsync', this.executeAsync);
+        connection.on('execute', (options: ExecuteOptions, user: ExecuteUser) => this.execute.apply(this, [options, user]));
+        connection.on('executeAsync', (options: ExecuteOptions, user: ExecuteUser) => this.executeAsync.apply(this, [options, user]));
 
         connection.onclose((error) => {
             this.logWarn('connection.onclose', error);
