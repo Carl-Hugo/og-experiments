@@ -5,7 +5,7 @@ export class Reload extends OgBaseModule {
     public get name(): string {
         return 'Reload';
     }
-    ready(): void {
+    override ready(): void {
         registerGameExtensions('reload', {
             // scripts: () => {
             //     const scripts = document.getElementsByTagName('script');

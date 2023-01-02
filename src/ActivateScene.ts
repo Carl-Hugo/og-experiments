@@ -7,7 +7,7 @@ export class ActivateScene extends OgBaseModule {
         return 'ActivateScene';
     }
 
-    init(): void {
+    override init(): void {
         registerGameExtensions('flow', {
             activateScene: this.activateScene,
         });

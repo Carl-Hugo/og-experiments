@@ -17,13 +17,13 @@ export class OpenSceneNotes extends OgBaseModule {
         super(logger);
     }
 
-    init(): void {
+    override init(): void {
         registerGameExtensions('flow', {
             openSceneNotes: this.openSceneNotes,
         });
     }
 
-    ready(): void {
+    override ready(): void {
         if (this.openSceneNotesOnReady.value) {
             this.openSceneNotes();
         }

@@ -42,7 +42,7 @@ export class StarWarsCrawl extends OgBaseModule {
         type: Boolean,
     });
 
-    init(): void {
+    override init(): void {
         registerGameExtensions('crawl', {
             loadCrawl: this.loadCrawl,
             unloadCrawl: this.unloadCrawl,
@@ -173,7 +173,7 @@ export class StarWarsCrawl extends OgBaseModule {
         }
     }
 
-    ready(): void {
+    override ready(): void {
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.open, this.loadCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.play, this.playCrawl, this);
         this.ogGameModuleSocket.registerAction<CrawlPayload>(CrawlActions.stop, this.stopCrawl, this);

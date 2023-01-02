@@ -163,7 +163,7 @@ export class SocialEncounterTracker extends OgBaseModule {
         },
         this.logger
     );
-    ready(): void {
+    override ready(): void {
         registerGameExtensions('SocialEncounterTracker', {
             open: (force: boolean = true) => this.form.render(force),
             close: () => this.form.close(),

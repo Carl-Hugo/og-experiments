@@ -8,7 +8,12 @@
         "experimentalDecorators": true,
         "module": "ESNext",
         "resolveJsonModule": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+        "noImplicitReturns": true,
+        "noImplicitOverride": true,
+        "noImplicitAny": true
     },
     "include": ["**/*.ts"]
 }

@@ -1,6 +1,6 @@
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { OgBaseModule } from './IModule';
-import Keycloak, { KeycloakAdapter } from 'keycloak-js';
+import Keycloak from 'keycloak-js';
 import { ILogger, registerGameExtensions } from './utils';
 import { OgSetting } from './OgSettings';
 
@@ -43,14 +43,14 @@ class AuthService {
                 // silentCheckSsoRedirectUri: 'https://localhost:30000/',
                 enableLogging: true,
             })
-            .then(function (authenticated) {
+            .then(function (authenticated: boolean) {
                 me.logger.logDebug(authenticated ? 'authenticated' : 'not authenticated');
                 me.authenticated = authenticated;
                 if (authenticated) {
                     me.token = me._keycloak.token;
                 }
             })
-            .catch(function (e) {
+            .catch(function (e: any) {
                 console.error('failed to initialize', e);
             });
     }
@@ -68,7 +68,7 @@ export class ServerPush extends OgBaseModule {
         scope: 'world',
     });
 
-    async ready(): Promise<void> {
+    override async ready(): Promise<void> {
         if (!this.enableServerPush.value) {
             return;
         }
