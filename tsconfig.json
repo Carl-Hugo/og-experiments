@@ -13,7 +13,10 @@
         "noUnusedParameters": false,
         "noImplicitReturns": true,
         "noImplicitOverride": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "esModuleInterop": true,
+        "noEmit": false,
+        "skipLibCheck": true
     },
     "include": ["**/*.ts"]
 }
