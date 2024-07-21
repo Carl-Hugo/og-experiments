@@ -1,5 +1,6 @@
 import { OgBaseModule } from '../IModule';
 import { registerGameExtensions } from '../utils';
+import { JournalPickerApplication } from './JournalPickerApplication';
 
 export class LoreSyncModule extends OgBaseModule {
     public get name(): string {
@@ -8,6 +9,12 @@ export class LoreSyncModule extends OgBaseModule {
     private loreFolder = new JournalSync('Lore');
     private questFolder = new JournalSync('Quests');
     private sharedFolder = new JournalSync('Shared');
+
+    private journalPickerWindow: JournalPickerApplication | undefined;
+
+    override init(): void {
+        // Handlebars.registerPartial('folder', Handlebars.templates['folder-template']);
+    }
 
     public override ready(): void {
         registerGameExtensions('journalSync', {
@@ -40,7 +47,18 @@ export class LoreSyncModule extends OgBaseModule {
                 getPages: this.sharedFolder.getPages,
                 getPageObjects: this.sharedFolder.getPageObjects,
             },
+            journalPicker: {
+                open: () => this.journalPickerWindow?.render(true),
+            },
         });
+        this.journalPickerWindow = new JournalPickerApplication(
+            {
+                rootFolders: getFolderTree(),
+            },
+            undefined,
+            this.logger
+        );
+        this.journalPickerWindow.render(true);
     }
 }
 

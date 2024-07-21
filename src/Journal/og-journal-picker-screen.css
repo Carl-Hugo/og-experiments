@@ -1,0 +1,24 @@
+.journal-picker {
+    padding: 20px;
+}
+
+.folder {
+    margin-bottom: 10px;
+}
+
+.journal-entry {
+    margin-left: 20px;
+}
+
+.journal-page {
+    margin-left: 40px;
+}
+
+.actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+button {
+    margin-left: 10px;
+}

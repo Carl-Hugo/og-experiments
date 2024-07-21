@@ -1,5 +1,6 @@
 @import url(../src/Crawl.css);
 @import url(../src/SocialEncounterTracker.css);
+@import url(../src/Journal/og-journal-picker-screen.css);
 
 a.content-link {
     line-height: 1.75em;

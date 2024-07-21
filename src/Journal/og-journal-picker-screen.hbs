@@ -1,0 +1,29 @@
+<div class="journal-picker">
+  {{#each rootFolders as |folder|}}
+    {{> folder folder=folder}}
+  {{/each}}
+  <div class="actions">
+    <button class="cancel">Cancel</button>
+    <button class="next">Next</button>
+  </div>
+</div>
+
+{{#*inline "folder"}}
+  <div class="folder">
+    <h3>{{folder.name}}</h3>
+    {{#each folder.subfolders as |subfolder|}}
+      {{> folder folder=subfolder}}
+    {{/each}}
+    {{#each folder.entries as |entry|}}
+      <div class="journal-entry">
+        <h4>{{entry.name}}</h4>
+        {{#each entry.pages as |page|}}
+          <div class="journal-page">
+            <input type="checkbox" id="{{page.id}}" name="page" value="{{page.id}}">
+            <label for="{{page.id}}">{{page.name}}</label>
+          </div>
+        {{/each}}
+      </div>
+    {{/each}}
+  </div>
+{{/inline}}
