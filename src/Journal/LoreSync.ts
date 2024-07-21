@@ -10,22 +10,15 @@ export class LoreSyncModule extends OgBaseModule {
     private sharedFolder = new JournalSync('Shared');
 
     public override ready(): void {
-        // @ts-ignore
-        const getTopFolders = () => game.folders.filter((x: { depth: number; type: string }) => x.type == 'JournalEntry' && x.depth == 1);
-        const getSubFolders = (parentFolder: { children: Array<{ children: Array<{ depth: number; folder: { name: string } }> }> }) => {
-            if (parentFolder.children.length > 0) {
-                // @ts-ignore
-                return parentFolder.children.map((c: { folder: { name: string } }) => new JournalSync(c.folder.name));
-            }
-            return [];
-        };
-        // Console usage:
-        // var f = game.og.journalSync.getTopFolders()[3];
-        // game.og.journalSync.getSubFolders(f)[0];
-
         registerGameExtensions('journalSync', {
+            getFolderTree: getFolderTree,
             getTopFolders: getTopFolders,
             getSubFolders: getSubFolders,
+            getFolderByName: getFolderByName,
+            getFolderById: getFolderById,
+            getJournalEntriesInFolder: getJournalEntriesInFolder,
+            getPagesinJournalEntry: getPagesinJournalEntry,
+            mapper: mapper,
             lore: {
                 getFolder: this.loreFolder.getFolder,
                 folderExists: this.loreFolder.folderExists,
@@ -58,7 +51,8 @@ class JournalSync {
     getFolder = () => {
         if (this.folder === undefined) {
             // @ts-ignore
-            this.folder = game.folders.find((x: { name: string; type: string }) => x.name == this.folderName && x.type == 'JournalEntry');
+            //this.folder = game.folders.find((x: { name: string; type: string }) => x.name == this.folderName && x.type == 'JournalEntry');
+            this.folder = getFolderByName(this.folderName);
         }
         return this.folder;
     };
@@ -87,8 +81,102 @@ class JournalSync {
     };
 }
 
+// Console usage:
+// var f = game.og.journalSync.getTopFolders()[3];
+// game.og.journalSync.getSubFolders(f)[0];
+//
+// OR
+// var topFolders = game.og.journalSync.getTopFolders()
+// game.og.journalSync.mapper.foundry.toFolder(topFolders[3])
+// topFolders.map(f => game.og.journalSync.mapper.foundry.toFolder(f))
+//
+// OR
+// game.og.journalSync.getFolderTree()
+
+const getFolderTree = () => {
+    var topFolders = getTopFolders();
+    return topFolders.map((f: any) => mapper.foundry.toFolder(f));
+};
+
+// @ts-ignore
+const getTopFolders = () => game.folders.filter((x: { depth: number; type: string }) => x.type == 'JournalEntry' && x.depth == 1);
+
+const getFolderByName = (folderName: string) => {
+    // @ts-ignore
+    return game.folders.find((x: { name: string; type: string }) => x.name == folderName && x.type == 'JournalEntry');
+};
+const getFolderById = (folderId: string) => {
+    // @ts-ignore
+    return game.folders.find((x: { id: string; type: string }) => x.id == folderId && x.type == 'JournalEntry');
+};
+
+const getSubFolders = (folder: { children: Array<{ children: Array<{ depth: number; folder: { name: string } }> }> }) => {
+    return folder.children;
+};
+
+const getJournalEntriesInFolder = (folder: { contents: Array<any> }) => {
+    if (folder.contents) {
+        return folder.contents;
+    }
+    return [];
+};
+const getPagesinJournalEntry = (journalEntry: any) => journalEntry.pages;
+
+const toPageContent = (journalEntryPage: any) => {
+    return {
+        id: journalEntryPage.id,
+        name: journalEntryPage.name,
+        content: journalEntryPage.text.content,
+        title: {
+            level: journalEntryPage.title.level,
+        },
+        ref: journalEntryPage,
+    } as PageContent;
+};
+const toJournal = (journalEntry: any) => {
+    return {
+        id: journalEntry.id,
+        name: journalEntry.name,
+        pages: getPagesinJournalEntry(journalEntry).map((p: any) => toPageContent(p)),
+        ref: journalEntry,
+    } as Journal;
+};
+const toFolder = (folder: any): Folder => {
+    var folderToMap = folder;
+    if (folder.folder) {
+        folderToMap = folder.folder;
+    }
+    return {
+        id: folderToMap.id,
+        name: folderToMap.name,
+        subfolders: getSubFolders(folderToMap).map((f: any) => toFolder(f)),
+        entries: getJournalEntriesInFolder(folderToMap).map((e: any) => toJournal(e)),
+        ref: folder,
+    } as Folder;
+};
+const mapper = {
+    foundry: {
+        toPageContent,
+        toJournal,
+        toFolder,
+    },
+};
 export interface PageContent {
     id: string;
     name: string;
     content: string;
+    title: { level: number };
+}
+
+export interface Journal {
+    id: string;
+    name: string;
+    pages: PageContent[];
+}
+
+export interface Folder {
+    id: string;
+    name: string;
+    subfolders: Folder[];
+    entries: Journal[];
 }
