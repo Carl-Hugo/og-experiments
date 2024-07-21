@@ -41,7 +41,7 @@ export class JournalPickerApplication extends Application {
             template: 'modules/og-experiments/src/Journal/og-journal-picker-screen.hbs',
             title: 'Journal Picker',
             width: 600,
-            height: 'auto',
+            height: '80%',
             resizable: true,
         }) as any;
     }
