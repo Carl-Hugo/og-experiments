@@ -22,3 +22,43 @@
 button {
     margin-left: 10px;
 }
+
+.journal-picker .collapsible {
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+}
+
+.journal-picker .collapsible.active,
+.journal-picker .collapsible:hover {
+    background-color: #ddd;
+}
+
+.journal-picker .collapsible + .content {
+    padding-left: 20px;
+}
+
+.journal-picker .collapsible:not(.active) + .content {
+    /* max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    padding-left: 20px; */
+    display: none;
+    transition: display 0.2s ease-out;
+}
+
+.journal-picker .collapsible.active + .content {
+    /* max-height:none; */
+}
+
+.actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+button {
+    margin-left: 10px;
+}

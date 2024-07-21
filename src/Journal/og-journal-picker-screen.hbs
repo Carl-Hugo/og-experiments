@@ -10,20 +10,31 @@
 
 {{#*inline "folder"}}
   <div class="folder">
-    <h3>{{folder.name}}</h3>
-    {{#each folder.subfolders as |subfolder|}}
-      {{> folder folder=subfolder}}
-    {{/each}}
-    {{#each folder.entries as |entry|}}
-      <div class="journal-entry">
-        <h4>{{entry.name}}</h4>
-        {{#each entry.pages as |page|}}
-          <div class="journal-page">
-            <input type="checkbox" id="{{page.id}}" name="page" value="{{page.id}}">
-            <label for="{{page.id}}">{{page.name}}</label>
+    <h3 class="collapsible" data-toggle="collapse">
+      <i class="fas fa-folder"></i>
+      {{folder.name}}
+    </h3>
+    <div class="content">
+      {{#each folder.subfolders as |subfolder|}}
+        {{> folder folder=subfolder}}
+      {{/each}}
+      {{#each folder.entries as |entry|}}
+        <div class="journal-entry">
+          <h4 class="collapsible" data-toggle="collapse">
+            <i class="fas fa-files"></i>
+            {{entry.name}}
+          </h4>
+          <div class="content">
+            {{#each entry.pages as |page|}}
+              <div class="journal-page">
+                <i class="fas fa-file"></i>
+                <input type="checkbox" id="{{page.id}}" name="page" value="{{page.id}}">
+                <label for="{{page.id}}">{{page.name}}</label>
+              </div>
+            {{/each}}
           </div>
-        {{/each}}
-      </div>
-    {{/each}}
+        </div>
+      {{/each}}
+    </div>
   </div>
 {{/inline}}

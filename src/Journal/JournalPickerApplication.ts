@@ -53,8 +53,23 @@ export class JournalPickerApplication extends Application {
     override activateListeners(html: JQuery): void {
         super.activateListeners(html);
 
+        html.find('.collapsible').on('click', (e) => this._toggle(e));
         html.find('button.cancel').on('click', () => this.close());
         html.find('button.next').on('click', () => this._onNext());
+    }
+
+    private _toggle(e: JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>): void {
+        var collapsible = e.target;
+        collapsible.classList.toggle('active');
+        // const content = collapsible.nextElementSibling;
+        // // @ts-ignore
+        // if (content.style.maxHeight) {
+        //     // @ts-ignore
+        //     content.style.maxHeight = null;
+        // } else {
+        //     // @ts-ignore
+        //     content.style.maxHeight = content.scrollHeight + 'px';
+        // }
     }
 
     private _onNext(): void {
