@@ -1,15 +1,16 @@
-import { ServerPush } from './src/ServerPush';
+// import { ServerPush } from './src/ServerPush';
 import { ActivateScene } from './src/ActivateScene';
-import { OpenSceneNotes } from './src/OpenSceneNotes';
-import { JournalModule } from './src/Journal';
-import { SocialEncounterTracker } from './src/SocialEncounterTracker';
+// import { OpenSceneNotes } from './src/OpenSceneNotes';
+// import { JournalModule } from './src/Journal';
+// import { SocialEncounterTracker } from './src/SocialEncounterTracker';
+// import { StarWarsCrawl } from './src/Crawl';
 import { Reload } from './src/Reload';
-import { StarWarsCrawl } from './src/Crawl';
 import { IOgModule } from './src/IModule';
 import { OgModuleManager } from './src/OgModuleManager';
 import { OgExperiment } from './src/OgExperiments';
 import { DefaultLoggerFactory, ILogger } from './src/utils';
 import { GlobalSettings } from './src/OgSettings';
+import { LoreSyncModule } from './src/Journal/LoreSync';
 
 const rootLogger: ILogger = DefaultLoggerFactory.createRootLogger();
 const globalSettings = new GlobalSettings(rootLogger);
@@ -20,13 +21,14 @@ const globalSettings = new GlobalSettings(rootLogger);
 OgExperiment.globalSettings = globalSettings;
 
 const modules = [
-    new JournalModule(rootLogger),
+    new LoreSyncModule(rootLogger),
+    // new JournalModule(rootLogger),
     new ActivateScene(rootLogger),
-    new OpenSceneNotes(rootLogger),
-    new SocialEncounterTracker(rootLogger),
-    new ServerPush(rootLogger),
+    // new OpenSceneNotes(rootLogger),
+    // new SocialEncounterTracker(rootLogger),
+    // new ServerPush(rootLogger),
     new Reload(rootLogger),
-    new StarWarsCrawl(rootLogger),
+    // new StarWarsCrawl(rootLogger),
     globalSettings,
 ] as IOgModule[];
 export const moduleManager = new OgModuleManager(modules, rootLogger);

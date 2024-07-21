@@ -13,9 +13,13 @@ export class ActivateScene extends OgBaseModule {
         });
 
         (CONFIG as any).TextEditor.enrichers.push({
-            pattern: /@ActivateScene\[([^\]]+)\](?:{([^}]+)})?/gm,
+            pattern: /@ActivateScene\[((Scene\.)?([^\]]+))\](?:{([^}]+)})?/gm,
             enricher: (match: any[], options: any) => {
-                let [target, name] = match.slice(1, 3);
+                let [target, name] = match.slice(3, 5);
+                // let [target, name] = match.slice(1, 3);
+                // if (target.startsWith('Scene.')) {
+                //     target = target.substring(6);
+                // }
                 var scene = (game as Game).scenes!.get(target);
                 let broken = scene ? false : true;
                 const data = {

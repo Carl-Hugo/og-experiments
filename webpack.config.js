@@ -68,10 +68,10 @@ module.exports = {
         // }),
         new CopyPlugin({
             patterns: [
-                {
-                    from: 'static',
-                    noErrorOnMissing: true,
-                },
+                { from: 'module.json' },
+                { from: 'assets', to: 'assets' },
+                { from: 'styles', to: 'styles' },
+                { from: 'templates', to: 'templates' },
             ],
         }),
     ],
