@@ -1,9 +1,8 @@
 .journal-picker {
-    padding: 20px;
+    padding: 5px;
 }
 
 .folder {
-    margin-bottom: 10px;
 }
 
 .journal-entry {
@@ -17,19 +16,21 @@
 .actions {
     margin-top: 20px;
     text-align: right;
+    display: flex;
 }
 
 button {
-    margin-left: 10px;
+    /* margin-left: 10px; */
 }
 
 .journal-picker .collapsible {
     cursor: pointer;
-    padding: 10px;
+    padding: 0px;
     border: none;
     text-align: left;
     outline: none;
     font-size: 16px;
+    margin-bottom: 0;
 }
 
 .journal-picker .collapsible.active,
@@ -38,7 +39,7 @@ button {
 }
 
 .journal-picker .collapsible + .content {
-    padding-left: 20px;
+    padding-left: 10px;
 }
 
 .journal-picker .collapsible:not(.active) + .content {
