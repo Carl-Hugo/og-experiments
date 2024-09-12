@@ -72,6 +72,7 @@ module.exports = {
                 { from: 'assets', to: 'assets' },
                 { from: 'styles', to: 'styles' },
                 { from: 'templates', to: 'templates' },
+                { from: '**/*.hbs', to: '' },
             ],
         }),
     ],

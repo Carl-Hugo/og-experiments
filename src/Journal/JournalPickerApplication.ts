@@ -77,6 +77,7 @@ export class JournalPickerApplication extends Application {
             (input: Element) => (input as HTMLInputElement).value
         );
         this.logger.logInfo('Selected Pages:', selectedPages);
+        this.data.nextAction({ selectedPages });
         this.close();
     }
 }
@@ -93,4 +94,9 @@ export class JournalPickerApplication extends Application {
 
 interface JournalPickerApplicationData {
     rootFolders: Folder[];
+    nextAction: (result: JournalPickerNextResult) => void;
+}
+
+interface JournalPickerNextResult {
+    selectedPages: string[];
 }

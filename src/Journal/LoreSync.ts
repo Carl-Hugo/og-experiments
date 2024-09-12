@@ -54,6 +54,21 @@ export class LoreSyncModule extends OgBaseModule {
         this.journalPickerWindow = new JournalPickerApplication(
             {
                 rootFolders: getFolderTree(),
+                nextAction: (result) => {
+                    const pages = result.selectedPages.map((pageId) => {
+                        const pageContent = getPageContentById(pageId);
+                        return pageContent;
+                    });
+                    this.logDebug(pages);
+
+                    let tmpOutput = '';
+                    pages.forEach((pageContent) => {
+                        if (pageContent) {
+                            tmpOutput += `<h1>${pageContent.name}</h1>${pageContent.content}\n\n`;
+                        }
+                    });
+                    this.logDebug(tmpOutput);
+                },
             },
             undefined,
             this.logger
@@ -179,6 +194,23 @@ const mapper = {
         toFolder,
     },
 };
+
+const getPageContentById = (pageId: string) => {
+    // @ts-ignore
+    for (const journalEntry of game.journal) {
+        const pages = journalEntry.pages;
+        const page = pages.find((p: { id: string }) => p.id === pageId);
+
+        if (page) {
+            return mapper.foundry.toPageContent(page);
+        }
+    }
+    return null;
+
+    // var page = game.journal.find((j: { id: string }) => j._id === pageId);
+    // return mapper.foundry.toPageContent(page);
+};
+
 export interface PageContent {
     id: string;
     name: string;
