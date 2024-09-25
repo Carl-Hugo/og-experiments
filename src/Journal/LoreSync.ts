@@ -17,63 +17,66 @@ export class LoreSyncModule extends OgBaseModule {
     }
 
     public override ready(): void {
-        registerGameExtensions('journalSync', {
-            getFolderTree: getFolderTree,
-            getTopFolders: getTopFolders,
-            getSubFolders: getSubFolders,
-            getFolderByName: getFolderByName,
-            getFolderById: getFolderById,
-            getJournalEntriesInFolder: getJournalEntriesInFolder,
-            getPagesinJournalEntry: getPagesinJournalEntry,
-            mapper: mapper,
-            lore: {
-                getFolder: this.loreFolder.getFolder,
-                folderExists: this.loreFolder.folderExists,
-                getJournalEntries: this.loreFolder.getJournalEntries,
-                getPages: this.loreFolder.getPages,
-                getPageObjects: this.loreFolder.getPageObjects,
-            },
-            quests: {
-                getFolder: this.questFolder.getFolder,
-                folderExists: this.questFolder.folderExists,
-                getJournalEntries: this.questFolder.getJournalEntries,
-                getPages: this.questFolder.getPages,
-                getPageObjects: this.questFolder.getPageObjects,
-            },
-            shared: {
-                getFolder: this.sharedFolder.getFolder,
-                folderExists: this.sharedFolder.folderExists,
-                getJournalEntries: this.sharedFolder.getJournalEntries,
-                getPages: this.sharedFolder.getPages,
-                getPageObjects: this.sharedFolder.getPageObjects,
-            },
-            journalPicker: {
-                open: () => this.journalPickerWindow?.render(true),
-            },
-        });
-        this.journalPickerWindow = new JournalPickerApplication(
-            {
-                rootFolders: getFolderTree(),
-                nextAction: (result) => {
-                    const pages = result.selectedPages.map((pageId) => {
-                        const pageContent = getPageContentById(pageId);
-                        return pageContent;
-                    });
-                    this.logDebug(pages);
-
-                    let tmpOutput = '';
-                    pages.forEach((pageContent) => {
-                        if (pageContent) {
-                            tmpOutput += `<h1>${pageContent.name}</h1>${pageContent.content}\n\n`;
-                        }
-                    });
-                    this.logDebug(tmpOutput);
+        // @ts-ignore
+        if (game.user.isGM) {
+            registerGameExtensions('journalSync', {
+                getFolderTree: getFolderTree,
+                getTopFolders: getTopFolders,
+                getSubFolders: getSubFolders,
+                getFolderByName: getFolderByName,
+                getFolderById: getFolderById,
+                getJournalEntriesInFolder: getJournalEntriesInFolder,
+                getPagesinJournalEntry: getPagesinJournalEntry,
+                mapper: mapper,
+                lore: {
+                    getFolder: this.loreFolder.getFolder,
+                    folderExists: this.loreFolder.folderExists,
+                    getJournalEntries: this.loreFolder.getJournalEntries,
+                    getPages: this.loreFolder.getPages,
+                    getPageObjects: this.loreFolder.getPageObjects,
                 },
-            },
-            undefined,
-            this.logger
-        );
-        this.journalPickerWindow.render(true);
+                quests: {
+                    getFolder: this.questFolder.getFolder,
+                    folderExists: this.questFolder.folderExists,
+                    getJournalEntries: this.questFolder.getJournalEntries,
+                    getPages: this.questFolder.getPages,
+                    getPageObjects: this.questFolder.getPageObjects,
+                },
+                shared: {
+                    getFolder: this.sharedFolder.getFolder,
+                    folderExists: this.sharedFolder.folderExists,
+                    getJournalEntries: this.sharedFolder.getJournalEntries,
+                    getPages: this.sharedFolder.getPages,
+                    getPageObjects: this.sharedFolder.getPageObjects,
+                },
+                journalPicker: {
+                    open: () => this.journalPickerWindow?.render(true),
+                },
+            });
+            this.journalPickerWindow = new JournalPickerApplication(
+                {
+                    rootFolders: getFolderTree(),
+                    nextAction: (result) => {
+                        const pages = result.selectedPages.map((pageId) => {
+                            const pageContent = getPageContentById(pageId);
+                            return pageContent;
+                        });
+                        this.logDebug(pages);
+
+                        let tmpOutput = '';
+                        pages.forEach((pageContent) => {
+                            if (pageContent) {
+                                tmpOutput += `<h1>${pageContent.name}</h1>${pageContent.content}\n\n`;
+                            }
+                        });
+                        this.logDebug(tmpOutput);
+                    },
+                },
+                undefined,
+                this.logger
+            );
+            // this.journalPickerWindow.render(true);
+        }
     }
 }
 

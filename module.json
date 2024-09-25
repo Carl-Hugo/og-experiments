@@ -3,13 +3,13 @@
     "name": "og-experiments",
     "title": "Og Experiments",
     "description": "Some local experiments.",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "templateVersion": 2,
     "minimumCoreVersion": "10",
     "compatibleCoreVersion": "10",
     "compatibility": {
         "minimum": 10,
-        "verified": 10
+        "verified": 12
     },
     "authors": [
         {

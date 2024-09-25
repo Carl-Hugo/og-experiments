@@ -11,6 +11,7 @@ import { OgExperiment } from './src/OgExperiments';
 import { DefaultLoggerFactory, ILogger } from './src/utils';
 import { GlobalSettings } from './src/OgSettings';
 import { LoreSyncModule } from './src/Journal/LoreSync';
+import { ChaosElemental } from './src/ChaosElemental';
 
 const rootLogger: ILogger = DefaultLoggerFactory.createRootLogger();
 const globalSettings = new GlobalSettings(rootLogger);
@@ -21,6 +22,7 @@ const globalSettings = new GlobalSettings(rootLogger);
 OgExperiment.globalSettings = globalSettings;
 
 const modules = [
+    new ChaosElemental(rootLogger),
     new LoreSyncModule(rootLogger),
     // new JournalModule(rootLogger),
     new ActivateScene(rootLogger),
