@@ -74,6 +74,7 @@ module.exports = {
                 { from: 'templates', to: 'templates' },
                 { from: 'src/**/*.hbs', to: '' },
                 { from: 'src/**/*.css', to: '' },
+                { from: 'src/**/*.png', to: '' },
             ],
         }),
     ],

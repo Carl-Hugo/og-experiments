@@ -1,0 +1,20 @@
+.og-custom-logo#pause > img {
+    animation: rotate 10s linear infinite;
+}
+
+.og-custom-logo#pause > figcaption {
+    color: #e8b34c;
+    font-family: 'Exocet';
+    font-weight: normal;
+    letter-spacing: normal;
+    font-size: 3rem;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
