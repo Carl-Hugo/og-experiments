@@ -5,32 +5,24 @@ export class CustomFoundryLogo extends OgBaseModule {
         return 'Custom Foundry Logo';
     }
 
-    override ready(): void {
+    override init(): void {
         //@ts-ignore
         Hooks.on('renderPause', (pauseLayer, html, data) => {
             this.logDebug('renderPause: ', pauseLayer, html, data);
-
             this.updateIcon(html[0]);
-            this.addClassToPauseElement(html[0]);
         });
-
-        this.updateIcon(document);
-        this.addClassToPauseElement(document);
     }
+
+    override ready(): void {
+        this.updateIcon(document);
+    }
+
     updateIcon(el: any) {
         const pauseIcon = el.querySelector('.paused img');
         if (pauseIcon) {
             //@ts-ignore
-            pauseIcon.src = 'modules/og-experiments/src/CustomFoundryLogo/custom-foundry-logo.png';
+            pauseIcon.src = 'modules/og-experiments/src/CustomFoundryLogo/custom-foundry-logo-128x128.png';
             this.logDebug('Updated paused icons');
-        }
-    }
-
-    addClassToPauseElement(el: any) {
-        const pauseContainer = el.querySelector('.paused');
-        if (pauseContainer) {
-            pauseContainer.classList.add('og-custom-logo');
-            this.logDebug('Updated paused container');
         }
     }
 }
