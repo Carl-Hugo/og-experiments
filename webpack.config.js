@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+// const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
     entry: './index.ts',
@@ -53,6 +54,14 @@ module.exports = {
             //     test: /\.css$/,
             //     use: [MiniCssExtractPlugin.loader, 'css-loader'],
             // },
+            // {
+            //     test: /\.css$/i,
+            //     use: ['style-loader', 'css-loader'],
+            // },
+            // {
+            //     test: /\.ttf$/,
+            //     use: ['file-loader'],
+            // },
         ],
     },
     plugins: [
@@ -66,6 +75,10 @@ module.exports = {
         // new ESLintPlugin({
         //     extensions: ['ts'],
         // }),
+        // new MonacoWebpackPlugin({
+        //     languages: ['javascript', 'html', 'handlebars', 'css'],
+        //     features: ['coreCommands', 'find'],
+        // }),
         new CopyPlugin({
             patterns: [
                 { from: 'module.json' },
@@ -78,4 +91,7 @@ module.exports = {
             ],
         }),
     ],
+    // experiments: {
+    //     topLevelAwait: true, // Enable top-level await
+    // },
 };

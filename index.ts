@@ -13,6 +13,7 @@ import { GlobalSettings } from './src/OgSettings';
 import { LoreSyncModule } from './src/Journal/LoreSync';
 import { ChaosElemental } from './src/ChaosElemental';
 import { CustomFoundryLogo } from './src/CustomFoundryLogo';
+import { MonacoEditor } from './src/MonacoEditor';
 
 const rootLogger: ILogger = DefaultLoggerFactory.createRootLogger();
 const globalSettings = new GlobalSettings(rootLogger);
@@ -33,6 +34,7 @@ const modules = [
     new Reload(rootLogger),
     // new StarWarsCrawl(rootLogger),
     new CustomFoundryLogo(rootLogger),
+    new MonacoEditor(rootLogger),
     globalSettings,
 ] as IOgModule[];
 export const moduleManager = new OgModuleManager(modules, rootLogger);
