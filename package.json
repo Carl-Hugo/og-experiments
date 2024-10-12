@@ -16,12 +16,14 @@
     "devDependencies": {
         "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
         "@types/node": "^18.7.14",
+        "@vscode/codicons": "^0.0.36",
         "clean-webpack-plugin": "4.0.0",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.1",
         "file-loader": "^6.2.0",
         "html-webpack-plugin": "5.5.0",
         "mini-css-extract-plugin": "2.6.1",
+        "monaco-editor": "^0.52.0",
         "monaco-editor-webpack-plugin": "^7.1.0",
         "source-map-loader": "^4.0.1",
         "style-loader": "^4.0.0",
@@ -34,7 +36,6 @@
     },
     "dependencies": {
         "@microsoft/signalr": "^6.0.8",
-        "keycloak-js": "^19.0.1",
-        "monaco-editor": "^0.52.0"
+        "keycloak-js": "^19.0.1"
     }
 }

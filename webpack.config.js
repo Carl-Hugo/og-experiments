@@ -1,17 +1,23 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-// const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
-    entry: './index.ts',
+    entry: {
+        app: './index.ts',
+        'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+        'json.worker': 'monaco-editor/esm/vs/language/json/json.worker',
+        'css.worker': 'monaco-editor/esm/vs/language/css/css.worker',
+        'html.worker': 'monaco-editor/esm/vs/language/html/html.worker',
+        'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker',
+    },
     devtool: 'inline-source-map',
     output: {
-        filename: 'index.js',
+        globalObject: 'self',
+        filename: '[name].index.js',
         path: path.resolve(__dirname, 'dist'),
-        publicPath: '',
+        publicPath: 'modules/og-experiments/',
     },
     resolve: {
         extensions: ['.js', '.ts'],
@@ -23,62 +29,29 @@ module.exports = {
             publicPath: '/',
             writeToDisk: true,
         },
-        // proxy: [
-        //     {
-        //         context: (pathname) => {
-        //             return !pathname.match('^/sockjs') && !pathname.match('^/ws');
-        //         },
-        //         target: 'http://localhost:30000',
-        //         ws: true,
-        //     },
-        // ],
     },
     module: {
         rules: [
             {
                 test: /\.ts$/,
-                use: [
-                    'ts-loader',
-                    'webpack-import-glob-loader',
-                    'source-map-loader',
-                    // {
-                    //     loader: 'string-replace-loader',
-                    //     options: {
-                    //         search: '"__ALL_TEMPLATES__"',
-                    //         replace: allTemplates,
-                    //     },
-                    // },
-                ],
+                use: ['ts-loader', 'webpack-import-glob-loader', 'source-map-loader'],
             },
-            // {
-            //     test: /\.css$/,
-            //     use: [MiniCssExtractPlugin.loader, 'css-loader'],
-            // },
-            // {
-            //     test: /\.css$/i,
-            //     use: ['style-loader', 'css-loader'],
-            // },
-            // {
-            //     test: /\.ttf$/,
-            //     use: ['file-loader'],
-            // },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.ttf$/,
+                use: ['file-loader'],
+            },
         ],
     },
     plugins: [
         new CleanWebpackPlugin(),
-        // new HtmlWebpackPlugin({
-        //     template: './src/index.html',
-        // }),
-        // new MiniCssExtractPlugin({
-        //     filename: 'css/[name].[chunkhash].css',
-        // }),
-        // new ESLintPlugin({
-        //     extensions: ['ts'],
-        // }),
-        // new MonacoWebpackPlugin({
-        //     languages: ['javascript', 'html', 'handlebars', 'css'],
-        //     features: ['coreCommands', 'find'],
-        // }),
+
+        new HtmlWebpackPlugin({
+            title: 'Monaco Editor—Og Experiments',
+        }),
         new CopyPlugin({
             patterns: [
                 { from: 'module.json' },
@@ -91,7 +64,4 @@ module.exports = {
             ],
         }),
     ],
-    // experiments: {
-    //     topLevelAwait: true, // Enable top-level await
-    // },
 };

@@ -1,6 +1,9 @@
 /* Planescape (exocet) Font */
 @import url('https://use.typekit.net/qkm2tir.css');
 
+/**/
+@import url('../assets/codicons/codicon.css');
+
 /* Local Imports */
 @import url(../src/Crawl.css);
 @import url(../src/SocialEncounterTracker.css);

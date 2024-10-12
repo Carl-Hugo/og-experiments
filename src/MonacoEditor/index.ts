@@ -1,6 +1,26 @@
-// import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-editor';
 import { OgBaseModule } from '../IModule';
 import { registerGameExtensions } from '../utils';
+
+// @ts-ignore
+self.MonacoEnvironment = {
+    // @ts-ignore
+    getWorkerUrl: function (moduleId, label) {
+        if (label === 'json') {
+            return './modules/og-experiments/json.worker.index.js';
+        }
+        if (label === 'css' || label === 'scss' || label === 'less') {
+            return './modules/og-experiments/css.worker.index.js';
+        }
+        if (label === 'html' || label === 'handlebars' || label === 'razor') {
+            return './modules/og-experiments/html.worker.index.js';
+        }
+        if (label === 'typescript' || label === 'javascript') {
+            return './modules/og-experiments/ts.worker.index.js';
+        }
+        return './modules/og-experiments/editor.worker.index.js';
+    },
+};
 
 class MonacoEditorApp extends Application {
     constructor(options: ApplicationOptions | undefined = undefined) {
@@ -20,21 +40,19 @@ class MonacoEditorApp extends Application {
 
     override activateListeners(html: JQuery): void {
         super.activateListeners(html);
-        // this.initializeMonacoEditor();
+        const container = document.getElementById('monaco-container');
+        if (container) {
+            monaco.editor.create(container, {
+                value: `// Start writing your code here`,
+                language: 'javascript',
+                theme: 'vs-dark',
+                automaticLayout: true,
+            });
+            // monaco.languages.typescript.javascriptDefaults.addExtraLib('')
+        } else {
+            console.warn('#monaco-container is null');
+        }
     }
-
-    // private async initializeMonacoEditor(): Promise<void> {
-    //     // const monaco = await import('monaco-editor');
-    //     const monaco = (window as any).monaco;
-    //     const container = document.getElementById('monaco-editor');
-    //     if (container) {
-    //         monaco.editor.create(container, {
-    //             value: `// Start writing your code here`,
-    //             language: 'javascript', // Set the default language (you can change this dynamically)
-    //             theme: 'vs-dark',
-    //         });
-    //     }
-    // }
 }
 
 export class MonacoEditor extends OgBaseModule {
@@ -43,19 +61,11 @@ export class MonacoEditor extends OgBaseModule {
         return 'Monaco Editor';
     }
     override ready(): void {
-        // const script = document.createElement('script');
-        // script.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs/loader.js';
-        // script.onload = () => {
-        //     this.logDebug('Monaco Editor script loaded');
-        //     (window as any).require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs' } });
-        // };
-        // document.body.appendChild(script);
-        // this.logDebug('MonacoEditor ready hook called');
-
         this.monacoApp = new MonacoEditorApp();
         registerGameExtensions('monacoEditor', {
             open: () => this.monacoApp?.render(true),
             close: () => this.monacoApp?.close(),
+            monaco: monaco,
         });
     }
 }
