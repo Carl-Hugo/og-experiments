@@ -37,7 +37,7 @@ export class JournalPickerApplication extends Application {
     }
 
     static override get defaultOptions(): ApplicationOptions {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             template: 'modules/og-experiments/src/Journal/og-journal-picker-screen.hbs',
             title: 'Journal Picker',
             width: 600,
