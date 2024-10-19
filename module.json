@@ -22,7 +22,7 @@
         "styles/module.css"
     ],
     "esmodules": [
-        "./dist/index.js"
+        "./dist/app.index.js"
     ],
     "x-languages": [
         {
