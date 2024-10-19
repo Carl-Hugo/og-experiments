@@ -68,10 +68,13 @@ module.exports = {
         // }),
         new CopyPlugin({
             patterns: [
-                {
-                    from: 'static',
-                    noErrorOnMissing: true,
-                },
+                { from: 'module.json' },
+                { from: 'assets', to: 'assets' },
+                { from: 'styles', to: 'styles' },
+                { from: 'templates', to: 'templates' },
+                { from: 'src/**/*.hbs', to: '' },
+                { from: 'src/**/*.css', to: '' },
+                { from: 'src/**/*.png', to: '' },
             ],
         }),
     ],

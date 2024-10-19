@@ -1,0 +1,65 @@
+.journal-picker {
+    padding: 5px;
+}
+
+.folder {
+}
+
+.journal-entry {
+    /* margin-left: 20px; */
+}
+
+.journal-page {
+    margin-left: 40px;
+}
+
+.actions {
+    margin-top: 20px;
+    text-align: right;
+    display: flex;
+}
+
+button {
+    /* margin-left: 10px; */
+}
+
+.journal-picker .collapsible {
+    cursor: pointer;
+    padding: 0px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.journal-picker .collapsible.active,
+.journal-picker .collapsible:hover {
+    background-color: #ddd;
+}
+
+.journal-picker .collapsible + .content {
+    padding-left: 10px;
+}
+
+.journal-picker .collapsible:not(.active) + .content {
+    /* max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    padding-left: 20px; */
+    display: none;
+    transition: display 0.2s ease-out;
+}
+
+.journal-picker .collapsible.active + .content {
+    /* max-height:none; */
+}
+
+.actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+button {
+    margin-left: 10px;
+}

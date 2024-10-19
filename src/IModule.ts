@@ -8,11 +8,13 @@ export interface IOgModule {
     setup(): void;
     ready(): void;
 }
+
 export abstract class OgBaseModule implements IOgModule {
     public abstract get name(): string;
     public get description(): string | null {
         return null;
     }
+
     constructor(protected logger: ILogger) {}
 
     logDebug(...data: any[]): void {
