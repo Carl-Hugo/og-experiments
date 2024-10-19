@@ -5,11 +5,13 @@
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "build": "webpack --mode=development",
-        "watch": "webpack --mode=development --watch",
-        "release": "webpack --mode=production",
-        "publish": "npm run release",
-        "start": "webpack serve --mode=development --hot"
+        "build": "npx vite build",
+        "watch": "npx vite build --watch",
+        "xbuild": "webpack --mode=development",
+        "xwatch": "webpack --mode=development --watch",
+        "xrelease": "webpack --mode=production",
+        "xpublish": "npm run release",
+        "xstart": "webpack serve --mode=development --hot"
     },
     "author": "Carl-Hugo Marcotte",
     "license": "MIT",
@@ -31,6 +33,9 @@
     },
     "dependencies": {
         "@microsoft/signalr": "^6.0.8",
-        "keycloak-js": "^19.0.1"
+        "@vitejs/plugin-vue": "^5.1.4",
+        "keycloak-js": "^19.0.1",
+        "vite": "^5.4.9",
+        "vite-plugin-static-copy": "^2.0.0"
     }
 }
