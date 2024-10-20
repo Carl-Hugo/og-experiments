@@ -40,17 +40,17 @@ class ConsoleLogger implements ILogger {
 // Game extensions
 const gameExtensionsKey = 'og';
 function initializeOgExtensions() {
-    (game as any)[gameExtensionsKey] = {};
+    (globalThis as any)[gameExtensionsKey] = {};
 }
 function enforceOgExtensionsInitialized() {
-    if ((game as any)[gameExtensionsKey] === undefined) {
+    if ((globalThis as any)[gameExtensionsKey] === undefined) {
         initializeOgExtensions();
     }
 }
 export function registerGameExtensions(key: string, setting: any) {
     enforceOgExtensionsInitialized();
-    (game as any)[gameExtensionsKey][key] = {
-        ...(game as any)[gameExtensionsKey][key],
+    (globalThis as any)[gameExtensionsKey][key] = {
+        ...(globalThis as any)[gameExtensionsKey][key],
         ...setting,
     };
 }
