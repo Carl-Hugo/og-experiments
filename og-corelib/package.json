@@ -1,0 +1,26 @@
+{
+    "name": "og-corelib",
+    "version": "0.1.0",
+    "description": "",
+    "private": true,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npx vite build",
+        "watch": "npx vite build --watch",
+        "xbuild": "webpack --mode=development",
+        "xwatch": "webpack --mode=development --watch",
+        "xrelease": "webpack --mode=production",
+        "xpublish": "npm run release",
+        "xstart": "webpack serve --mode=development --hot"
+    },
+    "author": "Carl-Hugo Marcotte",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^22.7.7",
+        "typescript": "5.6.3",
+        "@vitejs/plugin-vue": "^5.1.4",
+        "vite": "^5.4.9",
+        "vite-plugin-static-copy": "^2.0.0"
+    },
+    "dependencies": {}
+}

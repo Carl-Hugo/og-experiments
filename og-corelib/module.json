@@ -1,0 +1,27 @@
+{
+    "id": "og-corelib",
+    "title": "Og Core Library",
+    "description": "Core library that exposes sub-module components and the sub-module manager.",
+    "version": "0.1.0",
+    "templateVersion": 2,
+    "minimumCoreVersion": "10",
+    "compatibleCoreVersion": "10",
+    "compatibility": {
+        "minimum": 10,
+        "verified": 12
+    },
+    "authors": [
+        {
+            "name": "Carl-Hugo Marcotte",
+            "url": "https://www.linkedin.com/in/carl-hugo-marcotte",
+            "discord": "ogulrok"
+        }
+    ],
+    "styles": [
+        "module.css"
+    ],
+    "esmodules": [
+        "./index.js"
+    ],
+    "library": true
+}
