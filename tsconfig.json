@@ -3,7 +3,8 @@
         "target": "ESNext",
         "strict": true,
         "moduleResolution": "node",
-        "types": ["@league-of-foundry-developers/foundry-vtt-types"],
+        // "types": ["@league-of-foundry-developers/foundry-vtt-types"],
+        "typeRoots": ["@types", "node_modules/@types"],
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
         "module": "ESNext",
@@ -18,5 +19,5 @@
         "noEmit": false,
         "skipLibCheck": true
     },
-    "include": ["**/*.ts"]
+    "include": ["**/*.ts", "@types/@league-of-foundry-developers/foundry-vtt-types/index.d.mts"]
 }
