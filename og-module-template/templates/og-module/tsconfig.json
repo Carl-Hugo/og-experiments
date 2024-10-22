@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "strict": true,
+        "moduleResolution": "node",
+        "typeRoots": ["@types", "node_modules/@types"],
+        "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
+        "module": "ESNext",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+        "noImplicitReturns": true,
+        "noImplicitOverride": true,
+        "noImplicitAny": true,
+        "esModuleInterop": true,
+        "noEmit": false,
+        "skipLibCheck": true
+    },
+    "include": ["**/*.ts"]
+}

@@ -1,0 +1,32 @@
+{
+    "id": "og-module",
+    "title": "Og Module",
+    "description": "Enter your module description here.",
+    "version": "0.1.0",
+    "templateVersion": 2,
+    "minimumCoreVersion": "11",
+    "compatibleCoreVersion": "11",
+    "compatibility": {
+        "minimum": 11,
+        "verified": 12
+    },
+    "authors": [],
+    "styles": [
+        "./dist/module.css"
+    ],
+    "esmodules": [
+        "./dist/index.js"
+    ],
+    "relationships": {
+        "requires": [
+            {
+                "id": "og-corelib",
+                "type": "module",
+                "manifest": "https://raw.githubusercontent.com/Carl-Hugo/og-experiments/refs/heads/split-into-releasable-modules/og-corelib/module.json",
+                "compatibility": {
+                    "verified": "0.1.0"
+                }
+            }
+        ]
+    }
+}

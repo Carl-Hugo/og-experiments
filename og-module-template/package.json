@@ -1,0 +1,30 @@
+{
+  "name": "og-module-template",
+  "version": "1.0.0",
+  "description": "Create a Foundry VTT og-module",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "create-og-module": "index.js",
+    "ctpl": "index.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "src/index.js",
+    "templates/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "FoundryVTT"
+  ],
+  "author": "Carl-Hugo Marcotte",
+  "license": "MIT",
+  "devDependencies": {
+    "prompts": "^2.4.2"
+  }
+}

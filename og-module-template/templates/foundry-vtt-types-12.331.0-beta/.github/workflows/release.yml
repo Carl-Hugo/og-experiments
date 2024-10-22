@@ -1,0 +1,56 @@
+---
+name: publish
+
+on: # yamllint disable-line rule:truthy
+  release:
+    types: [created]
+
+env:
+  node_version: 18
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ env.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci --cache .npm --prefer-offline
+      - run: npm run typecheck
+      - run: npm run lint:ci
+      - run: npm test
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ env.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+          registry-url: "https://registry.npmjs.org"
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+      - run: npm ci --cache .npm --prefer-offline
+      - name: Publish
+        run: npm publish --ignore-scripts
+        shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

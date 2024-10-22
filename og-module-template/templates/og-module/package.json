@@ -1,0 +1,19 @@
+{
+    "name": "og-experiments",
+    "version": "0.1.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npx vite build",
+        "watch": "npx vite build --watch"
+    },
+    "author": "Carl-Hugo Marcotte",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^22.7.7",
+        "typescript": "^5.6.3",
+        "@vitejs/plugin-vue": "^5.1.4",
+        "vite": "^5.4.9",
+        "vite-plugin-static-copy": "^2.0.0"
+    }
+}
