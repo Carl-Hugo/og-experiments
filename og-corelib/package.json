@@ -6,12 +6,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "npx vite build",
-        "watch": "npx vite build --watch",
-        "xbuild": "webpack --mode=development",
-        "xwatch": "webpack --mode=development --watch",
-        "xrelease": "webpack --mode=production",
-        "xpublish": "npm run release",
-        "xstart": "webpack serve --mode=development --hot"
+        "watch": "npx vite build --watch"
     },
     "author": "Carl-Hugo Marcotte",
     "license": "MIT",
