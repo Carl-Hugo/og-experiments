@@ -1,3 +1,4 @@
+import { InexactPartial } from '../../@types/@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { OgBaseModule } from './IModule';
 import { OgExperiment } from './OgExperiments';
 import { DefaultLoggerFactory, ILogger } from './utils';

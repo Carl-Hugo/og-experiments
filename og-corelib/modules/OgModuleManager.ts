@@ -8,7 +8,9 @@ export class OgModuleManager {
 
     private modules: IOgModule[] = new Array<IOgModule>();
     public register(module: IOgModule): OgModuleManager {
+        this.logger.logDebug('registering module', module);
         this.modules.push(module);
+        this.logger.logDebug('Module', module, 'registered');
         return this;
     }
 

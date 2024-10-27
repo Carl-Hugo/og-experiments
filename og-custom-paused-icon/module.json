@@ -18,17 +18,17 @@
     }
   ],
   "styles": [
-    "./dist/module.css"
+    "./module.css"
   ],
   "esmodules": [
-    "./dist/index.js"
+    "./index.js"
   ],
   "relationships": {
     "requires": [
       {
         "id": "og-corelib",
         "type": "module",
-        "manifest": "https://raw.githubusercontent.com/og-modules/og-corelib/refs/heads/main/module.json",
+        "x-manifest": "https://raw.githubusercontent.com/og-modules/og-corelib/refs/heads/main/module.json",
         "compatibility": {
           "verified": "0.1.0"
         }

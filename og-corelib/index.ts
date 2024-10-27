@@ -1,10 +1,7 @@
 import { DefaultLoggerFactory, ILogger } from './loggers';
 import PackageInfo from './module.json' assert { type: 'json' };
-import { OgModuleManager } from './modules';
+import { OgBaseModule, OgModuleManager } from './modules';
 export * from './modules';
-
-const rootLogger: ILogger = DefaultLoggerFactory.createRootLogger();
-const moduleManager: OgModuleManager = new OgModuleManager(rootLogger);
 
 export class OgLib {
     public static get namespace(): string {
@@ -22,3 +19,21 @@ export class OgLib {
         return moduleManager;
     }
 }
+
+class PingPongModule extends OgBaseModule {
+    public override get name(): string {
+        return 'PingPongModule';
+    }
+
+    override init(): void {
+        this.logDebug('PingPongModule');
+    }
+
+    override ready(): void {
+        this.logDebug('PingPongModule');
+    }
+}
+
+const rootLogger: ILogger = DefaultLoggerFactory.createRootLogger();
+const moduleManager: OgModuleManager = new OgModuleManager(rootLogger);
+OgLib.moduleManager.register(new PingPongModule(rootLogger));

@@ -17,9 +17,6 @@
             "discord": "ogulrok"
         }
     ],
-    "styles": [
-        "module.css"
-    ],
     "esmodules": [
         "./index.js"
     ],

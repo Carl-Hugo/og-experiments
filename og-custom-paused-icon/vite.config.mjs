@@ -12,11 +12,13 @@ export default defineConfig({
         },
         outDir: 'dist',
         sourcemap: true,
+        minify: false,
         rollupOptions: {
             output: {
                 entryFileNames: 'index.js',
-                assetFileNames: 'assets/[name].[ext]',
+                preserveModules: true,
             },
+            external: ['@og-modules/og-corelib'],
         },
     },
     resolve: {
