@@ -31,7 +31,11 @@ const updatePackageJson = async (targetDir, response) => {
     try {
         const packageJsonData = await readFile(packageJsonPath, 'utf8');
         const packageJson = JSON.parse(packageJsonData);
-        packageJson.name = response.projectName;
+        if (response.projectScope) {
+            packageJson.name = `@${response.projectScope}/${response.projectName}`;
+        } else {
+            packageJson.name = response.projectName;
+        }
         packageJson.author = response.authorName;
         packageJson.description = response.projectTitle;
         await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2), 'utf8');
@@ -79,7 +83,7 @@ const updateTsconfigJson = async (targetDir, templateResponse) => {
     }
 };
 
-const projectNamePattern = /^[a-z0-9-]+$/i;
+const projectNamePattern = /^([a-z0-9-]+|\.)$/i;
 const TEMPLATES = [
     {
         value: 'og-module',
@@ -89,12 +93,21 @@ const TEMPLATES = [
             {
                 type: 'text',
                 name: 'projectName',
-                message: 'Enter your project name',
-                initial: 'my-awesome-module',
+                message: 'Enter your project name, like `my-awesome-module`. Leaving `.` will use the name of the current directory.',
+                initial: '.',
                 format: (val) => val.toLowerCase().split(' ').join('-'),
                 validate: (val) =>
                     projectNamePattern.test(val) ? true : 'Project name should not contain special characters except hyphen (-)',
             },
+            {
+                type: 'text',
+                name: 'projectScope',
+                message: 'Enter your project scope; used for NPM packages. Ex.: `og-modules` for @og-modules packages. Ignore if unsure.',
+                format: (val) => val.toLowerCase().split(' ').join('-'),
+                validate: (val) =>
+                    projectNamePattern.test(val) ? true : 'Project scope should not contain special characters except hyphen (-)',
+            },
+            //@og-modules/
             {
                 type: 'text',
                 name: 'projectTitle',
@@ -118,10 +131,20 @@ const TEMPLATES = [
             },
         ],
         action: async (template, templateResponse) => {
-            const targetDir = path.join(process.cwd(), templateResponse.projectName);
-            if (fs.existsSync(targetDir)) {
-                console.error('Target directory already exist!');
-                return;
+            let targetDir;
+            if (templateResponse.projectName === '.') {
+                // Use the current directory
+                templateResponse.projectName = path.basename(process.cwd());
+                targetDir = process.cwd();
+            } else {
+                // Use the provided project name to create the directory
+                targetDir = path.join(process.cwd(), templateResponse.projectName);
+
+                // Create the directory if it does not exist
+                if (fs.existsSync(targetDir)) {
+                    console.error('Target directory already exist!');
+                    return;
+                }
             }
 
             const sourceDir = path.resolve(fileURLToPath(import.meta.url), '../../templates', template.value);
