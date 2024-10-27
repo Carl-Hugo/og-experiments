@@ -18,7 +18,7 @@ export default defineConfig({
                 entryFileNames: 'index.js',
                 preserveModules: true,
             },
-            external: ['@og-modules/og-corelib'],
+            // external: ['@og-modules/og-corelib'],
         },
     },
     resolve: {
