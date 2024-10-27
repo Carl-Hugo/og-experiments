@@ -1,4 +1,5 @@
 export interface IOgModule {
+    get id(): string;
     get name(): string;
     get description(): string | null;
     init(): void;

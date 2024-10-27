@@ -2,6 +2,7 @@ import { ILogger } from '../loggers';
 import { IOgModule } from './IOgModule';
 
 export abstract class OgBaseModule implements IOgModule {
+    public abstract get id(): string;
     public abstract get name(): string;
     public get description(): string | null {
         return null;
@@ -10,16 +11,16 @@ export abstract class OgBaseModule implements IOgModule {
     constructor(protected logger: ILogger) {}
 
     logDebug(...data: any[]): void {
-        this.logger.logDebug(`${this.name} |`, ...data);
+        this.logger.logDebug(this.id, ...data);
     }
     logInfo(...data: any[]): void {
-        this.logger.logInfo(`${this.name} |`, ...data);
+        this.logger.logInfo(this.id, ...data);
     }
     logWarn(...data: any[]): void {
-        this.logger.logWarn(`${this.name} |`, ...data);
+        this.logger.logWarn(this.id, ...data);
     }
     logError(...data: any[]): void {
-        this.logger.logError(`${this.name} |`, ...data);
+        this.logger.logError(this.id, ...data);
     }
 
     /**

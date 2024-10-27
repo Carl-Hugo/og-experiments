@@ -3,13 +3,16 @@ import ModuleInfo from './module.json' assert { type: 'json' };
 
 //og-custom-paused-icon
 export class CustomPausedIcon extends OgBaseModule {
+    public override get id(): string {
+        return ModuleInfo.id;
+    }
     public override get name(): string {
-        return "Og's Custom Foundry VTT Paused Icon";
+        return ModuleInfo.title;
     }
 
     override init(): void {
         Hooks.on('renderPause', (pauseLayer: any, html: any, data: any) => {
-            this.logDebug('renderPause: ', pauseLayer, html, data);
+            this.logDebug('renderPause', pauseLayer, html, data);
             this.updateIcon(html[0]);
         });
     }

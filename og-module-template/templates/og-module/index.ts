@@ -1,8 +1,12 @@
 import { OgBaseModule, OgLib } from '@og-modules/og-corelib';
+import ModuleInfo from './module.json' assert { type: 'json' };
 
 export class OG_MODULE_CLASS_NAME extends OgBaseModule {
+    public override get id(): string {
+        return ModuleInfo.id;
+    }
     public override get name(): string {
-        return 'OG_MODULE_NAME';
+        return ModuleInfo.title;
     }
 
     override init(): void {

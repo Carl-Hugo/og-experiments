@@ -89,7 +89,6 @@ const updateIndexTs = async (targetDir, templateResponse) => {
         const content = await readFile(filePath, 'utf8');
         const className = camelize(templateResponse.projectName);
         content.replaceAll('OG_MODULE_CLASS_NAME', className);
-        content.replaceAll('OG_MODULE_NAME', templateResponse.projectTitle);
         await writeFile(filePath, content, 'utf8');
     } catch (error) {
         console.log(error.message);
