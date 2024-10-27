@@ -1,0 +1,20 @@
+#pause > img {
+    animation: rotate 10s linear infinite;
+}
+
+#pause > figcaption {
+    color: #e8b34c !important;
+    font-family: 'Exocet' !important;
+    font-weight: normal !important;
+    letter-spacing: normal !important;
+    font-size: 3rem !important;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

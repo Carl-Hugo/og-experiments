@@ -1,0 +1,38 @@
+{
+  "id": "og-custom-paused-icon",
+  "title": "Og's Custom Foundry VTT Paused Icon",
+  "description": "Change the paused icon to the one from Og's Game Hub.",
+  "version": "0.1.0",
+  "templateVersion": 2,
+  "minimumCoreVersion": "11",
+  "compatibleCoreVersion": "11",
+  "compatibility": {
+    "minimum": 11,
+    "verified": 12
+  },
+  "authors": [
+    {
+      "name": "Carl-Hugo Marcotte",
+      "url": "",
+      "discord": "ogulrok"
+    }
+  ],
+  "styles": [
+    "./dist/module.css"
+  ],
+  "esmodules": [
+    "./dist/index.js"
+  ],
+  "relationships": {
+    "requires": [
+      {
+        "id": "og-corelib",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/og-modules/og-corelib/refs/heads/main/module.json",
+        "compatibility": {
+          "verified": "0.1.0"
+        }
+      }
+    ]
+  }
+}

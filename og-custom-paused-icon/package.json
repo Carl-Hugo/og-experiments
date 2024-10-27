@@ -1,0 +1,20 @@
+{
+  "name": "@og-modules/og-custom-paused-icon",
+  "version": "0.1.0",
+  "description": "Og's Custom Foundry VTT Paused Icon",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx vite build",
+    "watch": "npx vite build --watch"
+  },
+  "author": "Carl-Hugo Marcotte",
+  "license": "MIT",
+  "devDependencies": {
+    "@og-modules/og-corelib": "^0.1.1",
+    "@types/node": "^22.7.7",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.9",
+    "vite-plugin-static-copy": "^2.0.0"
+  }
+}
