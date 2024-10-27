@@ -13,19 +13,21 @@ export default defineConfig({
         outDir: 'dist',
         sourcemap: true,
         minify: false,
+        emptyOutDir: true,
         rollupOptions: {
             output: {
-                entryFileNames: 'index.js',
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
                 preserveModules: true,
+                preserveModulesRoot: __dirname,
             },
-            // external: ['@og-modules/og-corelib'],
         },
     },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
         },
-        extensions: ['.js', '.ts'],
+        extensions: ['.js', '.ts', '.jsx', '.json'],
     },
     server: {
         port: 3000,

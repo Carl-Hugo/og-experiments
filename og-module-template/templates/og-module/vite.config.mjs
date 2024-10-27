@@ -10,12 +10,16 @@ export default defineConfig({
             formats: ['es'],
             fileName: 'index',
         },
-        // outDir: 'dist',
+        outDir: 'dist',
         sourcemap: true,
+        minify: false,
+        emptyOutDir: true,
         rollupOptions: {
             output: {
-                entryFileNames: 'index.js',
-                // assetFileNames: 'assets/[name].[ext]',
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                preserveModules: true,
+                preserveModulesRoot: __dirname,
             },
         },
     },
@@ -23,7 +27,7 @@ export default defineConfig({
         alias: {
             '@': path.resolve(__dirname, './src'),
         },
-        extensions: ['.js', '.ts'],
+        extensions: ['.js', '.ts', '.jsx', '.json'],
     },
     server: {
         port: 3000,
@@ -31,16 +35,7 @@ export default defineConfig({
     },
     plugins: [
         viteStaticCopy({
-            targets: [
-                // { src: 'module.json', dest: '.' },
-                // { src: 'module.css', dest: '.' },
-                // { src: 'src/**/*.hbs', dest: '.' },
-                // { src: 'src/**/*.css', dest: '.' },
-                // { src: 'src/**/*.png', dest: '.' },
-                // { src: 'src/**/*.gif', dest: '.' },
-                // { src: 'src/**/*.jpg', dest: '.' },
-                // { src: 'src/**/*.webp', dest: '.' },
-            ],
+            targets: [{ src: 'module.json', dest: '.' }],
         }),
     ],
 });
