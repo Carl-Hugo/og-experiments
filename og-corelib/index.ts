@@ -1,6 +1,7 @@
 import { DefaultLoggerFactory, ILogger } from './loggers';
 import PackageInfo from './module.json' assert { type: 'json' };
 import { OgModuleManager } from './modules';
+export * from './modules';
 
 const rootLogger: ILogger = DefaultLoggerFactory.createRootLogger();
 const moduleManager: OgModuleManager = new OgModuleManager(rootLogger);
