@@ -1,5 +1,5 @@
 {
-    "name": "og-corelib",
+    "name": "@og-modules/og-corelib",
     "version": "0.1.0",
     "description": "",
     "private": true,
