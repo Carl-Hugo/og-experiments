@@ -39,8 +39,8 @@ const updatePackageJson = async (targetDir, response) => {
         packageJson.author = response.authorName;
         packageJson.description = response.projectTitle;
         await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2), 'utf8');
-    } catch (err) {
-        console.log(err.message);
+    } catch (error) {
+        console.log(error.message);
     }
 };
 
@@ -57,8 +57,8 @@ const updateModuleJson = async (targetDir, response) => {
             discord: response.authorDiscord,
         });
         await writeFile(moduleJsonPath, JSON.stringify(moduleJson, null, 2), 'utf8');
-    } catch (err) {
-        console.log(err.message);
+    } catch (error) {
+        console.log(error.message);
     }
 };
 
@@ -78,10 +78,25 @@ const updateTsconfigJson = async (targetDir, templateResponse) => {
         }
         tsconfigJson.include.push(dtsFile);
         await writeFile(tsconfigJsonPath, JSON.stringify(tsconfigJson, null, 2), 'utf8');
-    } catch (err) {
-        console.log(err.message);
+    } catch (error) {
+        console.log(error.message);
     }
 };
+
+const updateIndexTs = async (targetDir, templateResponse) => {
+    const filePath = path.join(targetDir, 'index.ts');
+    try {
+        const content = await readFile(filePath, 'utf8');
+        const className = camelize(templateResponse.projectName);
+        content.replaceAll('OG_MODULE_CLASS_NAME', className);
+        content.replaceAll('OG_MODULE_NAME', templateResponse.projectTitle);
+        await writeFile(filePath, content, 'utf8');
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+const camelize = (s) => s.replace(/-./g, (x) => x[1].toUpperCase()); // From: https://stackoverflow.com/a/60738940/8339553
 
 const projectNamePattern = /^([a-z0-9-]+|\.)$/i;
 const TEMPLATES = [
@@ -111,7 +126,7 @@ const TEMPLATES = [
             {
                 type: 'text',
                 name: 'projectTitle',
-                message: 'Enter the project title',
+                message: 'Enter the project title (like My Awesome Module)',
             },
             {
                 type: 'text',
@@ -157,6 +172,10 @@ const TEMPLATES = [
             console.log('Updating module.json...');
             await updateModuleJson(targetDir, templateResponse);
             console.log('module.json updated.');
+
+            console.log('Updating index.ts...');
+            await updateIndexTs(targetDir, templateResponse);
+            console.log('index.ts updated.');
 
             console.log(`Finished generating your project ${templateResponse.projectName}`);
             console.log(`cd ${templateResponse.projectName}`);

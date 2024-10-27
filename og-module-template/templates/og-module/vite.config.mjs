@@ -10,12 +10,12 @@ export default defineConfig({
             formats: ['es'],
             fileName: 'index',
         },
-        outDir: 'dist',
+        // outDir: 'dist',
         sourcemap: true,
         rollupOptions: {
             output: {
                 entryFileNames: 'index.js',
-                assetFileNames: 'assets/[name].[ext]',
+                // assetFileNames: 'assets/[name].[ext]',
             },
         },
     },
@@ -32,7 +32,8 @@ export default defineConfig({
     plugins: [
         viteStaticCopy({
             targets: [
-                { src: 'module.json', dest: '.' },
+                // { src: 'module.json', dest: '.' },
+                // { src: 'module.css', dest: '.' },
                 // { src: 'src/**/*.hbs', dest: '.' },
                 // { src: 'src/**/*.css', dest: '.' },
                 // { src: 'src/**/*.png', dest: '.' },

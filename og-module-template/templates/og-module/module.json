@@ -22,7 +22,7 @@
             {
                 "id": "og-corelib",
                 "type": "module",
-                "manifest": "https://raw.githubusercontent.com/Carl-Hugo/og-experiments/refs/heads/split-into-releasable-modules/og-corelib/module.json",
+                "manifest": "https://raw.githubusercontent.com/og-modules/og-corelib/refs/heads/main/module.json",
                 "compatibility": {
                     "verified": "0.1.0"
                 }
