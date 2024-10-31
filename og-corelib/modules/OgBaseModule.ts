@@ -1,16 +1,56 @@
+import { Lazy } from '../utils';
 import { IOgHooks, OgHooks } from '../hooks';
-import { ILogger } from '../loggers';
-import { IOgModule } from './IOgModule';
+import { DefaultLoggerFactory, ILogger } from '../loggers';
+import { IModuleInfo, IOgModule } from './';
+import { ISettingFactory, OgSetting } from '../settings';
 
-export abstract class OgBaseModule implements IOgModule, IOgHooks, ILogger {
-    public abstract get id(): string;
-    public abstract get name(): string;
-    public get description(): string | null {
-        return null;
+export abstract class OgBaseModule implements IOgModule, IOgHooks, ILogger, ISettingFactory {
+    public get id(): string {
+        return this.moduleInfo.id;
+    }
+    public get title(): string {
+        return this.moduleInfo.title;
+    }
+    public get description(): string | undefined {
+        return this.moduleInfo.description;
     }
 
-    constructor(protected logger: ILogger, protected hooks: IOgHooks = new OgHooks(logger)) {}
+    protected get hooks() {
+        return this.hooksFactory.value;
+    }
+    protected get logger() {
+        return this.loggerFactory.value;
+    }
 
+    constructor(
+        private moduleInfo: IModuleInfo,
+        private loggerFactory = new Lazy(() => DefaultLoggerFactory.create(this.id)),
+        private hooksFactory = new Lazy(() => new OgHooks(this.logger))
+    ) {}
+
+    /**
+     * Forwarding methods to ISettingFactory interface.
+     */
+    CreateClientSetting<T>(
+        key: string,
+        defaultValue: T,
+        settings: ClientSettings,
+        init: (setting: OgSetting<T>) => void = () => {}
+    ): OgSetting<T> {
+        return new OgSetting<T>(this, this, this, key, defaultValue, 'client', settings, init);
+    }
+    CreateWorldSetting<T>(
+        key: string,
+        defaultValue: T,
+        settings: ClientSettings,
+        init: (setting: OgSetting<T>) => void = () => {}
+    ): OgSetting<T> {
+        return new OgSetting<T>(this, this, this, key, defaultValue, 'world', settings, init);
+    }
+
+    /**
+     * Forwarding methods to ILogger interface.
+     */
     logDebug(...data: any[]): void {
         this.logger.logDebug(this.id, ...data);
     }
@@ -28,7 +68,7 @@ export abstract class OgBaseModule implements IOgModule, IOgHooks, ILogger {
     }
 
     /**
-     * Forwarding methods for IOgHooks interface.
+     * Forwarding methods to IOgHooks interface.
      */
     get events() {
         return this.hooks.events;

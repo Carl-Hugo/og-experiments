@@ -1,29 +1,26 @@
 import { IOgModule } from './modules';
-
 export * from './modules';
+export * from './utils';
 
 // Game extensions
 const gameExtensionsKey = 'og';
+
 function initializeOgExtensions() {
     (globalThis as any)[gameExtensionsKey] = {};
 }
+
 function enforceOgExtensionsInitialized() {
     if ((globalThis as any)[gameExtensionsKey] === undefined) {
         initializeOgExtensions();
     }
 }
-export function registerGameExtensions(key: string, setting: any) {
-    enforceOgExtensionsInitialized();
-    (globalThis as any)[gameExtensionsKey][key] = {
-        ...(globalThis as any)[gameExtensionsKey][key],
-        ...setting,
-    };
-}
 
-export function registerOgPlugin(plugin: IOgModule) {
+export function registerOgModule(moduleFactory: () => IOgModule): IOgModule {
     enforceOgExtensionsInitialized();
-    (globalThis as any)[gameExtensionsKey][plugin.id] = {
-        ...(globalThis as any)[gameExtensionsKey][plugin.id],
-        ...plugin,
+    const module = moduleFactory();
+    (globalThis as any)[gameExtensionsKey][module.id] = {
+        ...(globalThis as any)[gameExtensionsKey][module.id],
+        ...module,
     };
+    return module;
 }

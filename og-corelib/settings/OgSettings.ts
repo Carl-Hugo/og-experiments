@@ -1,6 +1,6 @@
-import { InexactPartial } from '../../@types/@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
-import { DefaultLoggerFactory, ILogger } from '../loggers';
-import { OgLib } from '..';
+import { IOgHooks } from '../hooks';
+import { ILogger } from '../loggers';
+import { IOgModule } from '../modules';
 
 export class OgSetting<T> {
     private _value: T;
@@ -9,22 +9,27 @@ export class OgSetting<T> {
     private logger: ILogger;
 
     constructor(
+        private module: IOgModule,
+        private moduleLogger: ILogger,
+        private hooks: IOgHooks,
         private key: string,
         private defaultValue: T,
-        private settings: InexactPartial<Omit<SettingConfig<T>, 'key' | 'namespace'>>,
-        init: (setting: OgSetting<T>) => void = () => {}
+        private scope: 'client' | 'world',
+        private settings: ClientSettings,
+        init: (setting: OgSetting<T>) => void
     ) {
-        this.logger = DefaultLoggerFactory.createRootLogger().createScope('OgSetting').createScope(this.key);
+        this.logger = this.moduleLogger.createScope('OgSetting').createScope(this.key);
         this._value = defaultValue;
         init(this);
-        Hooks.once('ready', () => this.ready.apply(this));
+        this.hooks.once('ready', () => this.ready.apply(this));
     }
 
     private ready(): void {
-        this.logger.logDebug('getting ready', this.key, this.defaultValue);
-        (game as Game).settings.register(OgLib.namespace, this.key, {
+        this.logger.logDebug('getting ready', this.defaultValue);
+        // @ts-expect-error
+        game?.settings?.register(this.module.id, this.key, {
             ...{
-                scope: 'client',
+                scope: this.scope,
                 config: true,
                 default: this.defaultValue,
                 onChange: (value: T) => {
@@ -35,9 +40,9 @@ export class OgSetting<T> {
             },
             ...this.settings,
         });
-        this.value = (game as Game).settings.get(OgLib.namespace, this.key) as T;
+        // @ts-expect-error
+        this.value = game?.settings?.get(this.module.id, this.key) as T;
         this.logger.logDebug('ready', {
-            key: this.key,
             defaultValue: this.defaultValue,
             value: this.value,
         });
@@ -50,7 +55,8 @@ export class OgSetting<T> {
     public set value(value: T) {
         if (this._value != value) {
             this._value = value;
-            (game as Game).settings.set(OgLib.namespace, this.key, value);
+            // @ts-expect-error
+            game?.settings?.set(this.module.id, this.key, value);
         }
     }
 }

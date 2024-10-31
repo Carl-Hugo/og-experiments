@@ -1,5 +1,3 @@
-/// <reference path="../../@types/@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/hooks.d.mts" />
-
 import { ILogger } from '../loggers';
 
 export class OgHooks implements IOgHooks {

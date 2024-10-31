@@ -181,45 +181,45 @@ const TEMPLATES = [
             console.log(`npm install`);
         },
     },
-    {
-        value: 'foundry-vtt-types',
-        title: 'League of foundry developers Foundry VTT types v12.331.0-beta',
-        description: 'Copy Foundry VTT types definition files v12.331.0-beta into the project under the `@types` folder.',
-        prompts: [
-            {
-                type: 'select',
-                name: 'version',
-                message: 'Select template',
-                choices: [
-                    {
-                        value: '12.331.0-beta',
-                        title: 'Foundry VTT types v12.331.0-beta',
-                    },
-                ],
-            },
-            {
-                type: 'toggle',
-                name: 'includeLatestFoundryTypes',
-                message: 'Include the latest Foundry VTT type definition files in tsconfig.json?',
-                initial: true,
-            },
-        ],
-        action: async (template, templateResponse) => {
-            const typeFolderName = `${template.value}-${templateResponse.version}`;
-            const targetDir = path.join(process.cwd(), '@types', typeFolderName);
-            if (fs.existsSync(targetDir)) {
-                console.error('Target directory already exist!');
-                return;
-            }
+    // {
+    //     value: 'foundry-vtt-types',
+    //     title: 'League of foundry developers Foundry VTT types v12.331.0-beta',
+    //     description: 'Copy Foundry VTT types definition files v12.331.0-beta into the project under the `@types` folder.',
+    //     prompts: [
+    //         {
+    //             type: 'select',
+    //             name: 'version',
+    //             message: 'Select template',
+    //             choices: [
+    //                 {
+    //                     value: '12.331.0-beta',
+    //                     title: 'Foundry VTT types v12.331.0-beta',
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             type: 'toggle',
+    //             name: 'includeLatestFoundryTypes',
+    //             message: 'Include the latest Foundry VTT type definition files in tsconfig.json?',
+    //             initial: true,
+    //         },
+    //     ],
+    //     action: async (template, templateResponse) => {
+    //         const typeFolderName = `${template.value}-${templateResponse.version}`;
+    //         const targetDir = path.join(process.cwd(), '@types', typeFolderName);
+    //         if (fs.existsSync(targetDir)) {
+    //             console.error('Target directory already exist!');
+    //             return;
+    //         }
 
-            const sourceDir = path.resolve(fileURLToPath(import.meta.url), '../../templates', typeFolderName);
-            await copyTemplateFiles(targetDir, sourceDir);
+    //         const sourceDir = path.resolve(fileURLToPath(import.meta.url), '../../templates', typeFolderName);
+    //         await copyTemplateFiles(targetDir, sourceDir);
 
-            if (templateResponse.includeLatestFoundryTypes) {
-                updateTsconfigJson(process.cwd(), templateResponse);
-            }
-        },
-    },
+    //         if (templateResponse.includeLatestFoundryTypes) {
+    //             updateTsconfigJson(process.cwd(), templateResponse);
+    //         }
+    //     },
+    // },
 ];
 
 (async () => {
