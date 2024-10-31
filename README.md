@@ -26,7 +26,9 @@ npm link
 # See `npm help link` for more info
 
 # Install og-corelib locally for dev (using the link create previously --^)
-npm link og-corelib
+# npm link @og-modules/og-corelib # <<--- DONT
+cd YOUR_MODULE_FOLDER
+npm install ../og-corelib --no-save
 
 # List the global packages (includes links)
 npm list -g

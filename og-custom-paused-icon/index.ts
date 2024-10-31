@@ -22,5 +22,5 @@ export class CustomPausedIcon extends OgBaseModule {
     }
 }
 
-// Create an instance of the module's plugin and register it as an `og` extension.
+// Create an instance of the module and register it with Og Core Library.
 registerOgModule(() => new CustomPausedIcon(ModuleInfo));

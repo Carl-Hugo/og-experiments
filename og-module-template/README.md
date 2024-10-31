@@ -1,3 +1,9 @@
+# How to run
+
+```bash
+npx create-og-module
+```
+
 **TODO:**
 
 -   Create the base module in `og-module-template\templates\og-module\index.ts`

@@ -87,15 +87,18 @@ const updateIndexTs = async (targetDir, templateResponse) => {
     const filePath = path.join(targetDir, 'index.ts');
     try {
         const content = await readFile(filePath, 'utf8');
-        const className = camelize(templateResponse.projectName);
-        content.replaceAll('OG_MODULE_CLASS_NAME', className);
-        await writeFile(filePath, content, 'utf8');
+        console.log('content: ', content);
+        const className = pascalize(templateResponse.projectName);
+        console.log('className: ', className);
+        const updatedContent = content.replaceAll('OG_MODULE_CLASS_NAME', className);
+        await writeFile(filePath, updatedContent, 'utf8');
     } catch (error) {
         console.log(error.message);
     }
 };
 
 const camelize = (s) => s.replace(/-./g, (x) => x[1].toUpperCase()); // From: https://stackoverflow.com/a/60738940/8339553
+const pascalize = (s) => s.replace(/(^\w|-\w)/g, (x) => x.replace('-', '').toUpperCase());
 
 const projectNamePattern = /^([a-z0-9-]+|\.)$/i;
 const TEMPLATES = [
@@ -177,6 +180,8 @@ const TEMPLATES = [
             console.log('index.ts updated.');
 
             console.log(`Finished generating your project ${templateResponse.projectName}`);
+            console.log('---');
+            console.log('To get started, execute the followign commands: ');
             console.log(`cd ${templateResponse.projectName}`);
             console.log(`npm install`);
         },
