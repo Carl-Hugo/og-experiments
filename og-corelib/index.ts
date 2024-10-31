@@ -1,24 +1,29 @@
-import { DefaultLoggerFactory, ILogger } from './loggers';
-import PackageInfo from './module.json' assert { type: 'json' };
-import { OgModuleManager } from './modules';
+import { IOgModule } from './modules';
+
 export * from './modules';
 
-export class OgLib {
-    public static get namespace(): string {
-        return PackageInfo.id;
-    }
-    public static get id(): string {
-        return PackageInfo.id;
-    }
-
-    public static get rootLogger(): ILogger {
-        return rootLogger;
-    }
-
-    public static get moduleManager(): OgModuleManager {
-        return moduleManager;
+// Game extensions
+const gameExtensionsKey = 'og';
+function initializeOgExtensions() {
+    (globalThis as any)[gameExtensionsKey] = {};
+}
+function enforceOgExtensionsInitialized() {
+    if ((globalThis as any)[gameExtensionsKey] === undefined) {
+        initializeOgExtensions();
     }
 }
+export function registerGameExtensions(key: string, setting: any) {
+    enforceOgExtensionsInitialized();
+    (globalThis as any)[gameExtensionsKey][key] = {
+        ...(globalThis as any)[gameExtensionsKey][key],
+        ...setting,
+    };
+}
 
-const rootLogger: ILogger = DefaultLoggerFactory.createRootLogger();
-const moduleManager: OgModuleManager = new OgModuleManager(rootLogger);
+export function registerOgPlugin(plugin: IOgModule) {
+    enforceOgExtensionsInitialized();
+    (globalThis as any)[gameExtensionsKey][plugin.id] = {
+        ...(globalThis as any)[gameExtensionsKey][plugin.id],
+        ...plugin,
+    };
+}
