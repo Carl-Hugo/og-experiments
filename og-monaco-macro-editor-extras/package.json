@@ -1,0 +1,21 @@
+{
+  "name": "@og-modules/og-monaco-macro-editor-extras",
+  "version": "0.1.0",
+  "description": "Monaco Macro Editor Extras",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx vite build",
+    "watch": "npx vite build --watch"
+  },
+  "author": "Carl-Hugo Marcotte",
+  "license": "MIT",
+  "devDependencies": {
+    "@league-of-foundry-developers/foundry-vtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main",
+    "@og-modules/og-corelib": "^0.1.0",
+    "@types/node": "^22.7.7",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.9",
+    "vite-plugin-static-copy": "^2.0.0"
+  }
+}

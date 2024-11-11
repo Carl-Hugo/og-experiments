@@ -1,0 +1,46 @@
+{
+  "id": "og-monaco-macro-editor-extras",
+  "title": "Monaco Macro Editor Extras",
+  "description": "Add extras options to the Monaco Macro Editor.",
+  "version": "0.1.0",
+  "templateVersion": 2,
+  "minimumCoreVersion": "11",
+  "compatibleCoreVersion": "11",
+  "compatibility": {
+    "minimum": 11,
+    "verified": 12
+  },
+  "authors": [
+    {
+      "name": "Carl-Hugo Marcotte",
+      "url": "",
+      "discord": "ogulrok"
+    }
+  ],
+  "styles": [
+    "./dist/module.css"
+  ],
+  "esmodules": [
+    "./dist/index.js"
+  ],
+  "relationships": {
+    "requires": [
+      {
+        "id": "og-corelib",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/og-modules/og-corelib/refs/heads/main/module.json",
+        "compatibility": {
+          "verified": "0.1.0"
+        }
+      },
+      {
+        "id": "monaco-macro-editor",
+        "type": "module",
+        "manifest": "https://github.com/tposney/monaco-macro-editor/releases/download/v1.0.7/module.json",
+        "compatibility": {
+          "verified": "1.0.7"
+        }
+      }
+    ]
+  }
+}
