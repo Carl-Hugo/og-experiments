@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import path from 'path';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -34,6 +35,12 @@ export default defineConfig({
         open: false, // Not necessary for a module
     },
     plugins: [
+        dts({
+            insertTypesEntry: true,
+            tsConfigFilePath: path.resolve(__dirname, 'tsconfig.json'),
+            outputDir: 'dist',
+            rollupTypes: true,
+        }),
         viteStaticCopy({
             targets: [{ src: 'module.json', dest: '.' }],
         }),

@@ -16,7 +16,11 @@
         "noImplicitAny": true,
         "esModuleInterop": true,
         "noEmit": false,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+
+        "declaration": true,
+        "declarationDir": "./dist",
+        "emitDeclarationOnly": true
     },
-    "include": ["**/*.ts"]
+    "include": ["**/*.ts", "global.d.ts"]
 }

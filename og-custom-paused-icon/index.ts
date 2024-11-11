@@ -1,8 +1,7 @@
-import { OgBaseModule, registerOgModule } from '@og-modules/og-corelib';
 import ModuleInfo from './module.json' assert { type: 'json' };
 
 //og-custom-paused-icon
-export class CustomPausedIcon extends OgBaseModule {
+export class CustomPausedIcon extends og.BaseModule {
     public override initialize(): void {
         this.hooks.on('renderPause', (pauseLayer: any, html: any, data: any) => {
             this.updateIcon(html[0]);
@@ -23,4 +22,4 @@ export class CustomPausedIcon extends OgBaseModule {
 }
 
 // Create an instance of the module and register it with Og Core Library.
-registerOgModule(() => new CustomPausedIcon(ModuleInfo));
+og.registerModule(() => new CustomPausedIcon(ModuleInfo));
