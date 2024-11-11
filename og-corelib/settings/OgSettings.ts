@@ -2,7 +2,7 @@ import { IOgHooks } from '../hooks';
 import { ILogger } from '../loggers';
 import { IOgModule } from '../modules';
 
-export class OgSetting<T> {
+export class OgSetting<T extends ClientSettings.Type> {
     private _value: T;
     public beforeUpdate: (setting: OgSetting<T>, value: T) => void = () => {};
     public afterUpdate: (setting: OgSetting<T>) => void = () => {};
@@ -15,7 +15,7 @@ export class OgSetting<T> {
         private key: string,
         private defaultValue: T,
         private scope: 'client' | 'world',
-        private settings: ClientSettings,
+        private settings: ClientSettings.RegisterOptions<NoInfer<T>>,
         init: (setting: OgSetting<T>) => void
     ) {
         this.logger = this.moduleLogger.createScope('OgSetting').createScope(this.key);

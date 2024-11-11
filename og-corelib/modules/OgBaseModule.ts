@@ -31,18 +31,18 @@ export abstract class OgBaseModule implements IOgModule, IOgHooks, ILogger, ISet
     /**
      * Forwarding methods to ISettingFactory interface.
      */
-    CreateClientSetting<T>(
+    CreateClientSetting<T extends ClientSettings.Type>(
         key: string,
         defaultValue: T,
-        settings: ClientSettings,
+        settings: ClientSettings.RegisterOptions<NoInfer<T>>,
         init: (setting: OgSetting<T>) => void = () => {}
     ): OgSetting<T> {
         return new OgSetting<T>(this, this, this, key, defaultValue, 'client', settings, init);
     }
-    CreateWorldSetting<T>(
+    CreateWorldSetting<T extends ClientSettings.Type>(
         key: string,
         defaultValue: T,
-        settings: ClientSettings,
+        settings: ClientSettings.RegisterOptions<NoInfer<T>>,
         init: (setting: OgSetting<T>) => void = () => {}
     ): OgSetting<T> {
         return new OgSetting<T>(this, this, this, key, defaultValue, 'world', settings, init);
