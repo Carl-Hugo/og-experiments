@@ -1,5 +1,5 @@
 {
-  "name": "og-module-template",
+  "name": "@og-modules/module-template",
   "version": "1.0.0",
   "description": "Create a Foundry VTT og-module",
   "type": "module",
