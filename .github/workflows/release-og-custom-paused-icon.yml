@@ -1,0 +1,195 @@
+name: Release og-custom-paused-icon Module
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+env:
+  node_version: 22
+  module_path: og-custom-paused-icon
+
+jobs:
+  set_version:
+    runs-on: ubuntu-latest
+
+    outputs:
+      previous: ${{ steps.versions.outputs.previous }}
+      current: ${{ steps.versions.outputs.current }}
+      should_release: ${{ steps.versions.outputs.should_release }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 'Get Previous tag for og-custom-paused-icon'
+        id: previoustag
+        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
+        with:
+          prefix: 'og-custom-paused-icon-v'
+        continue-on-error: true
+
+      - name: Get version from module.json
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with:
+          path: '${{ env.module_path }}/module.json'
+          prop_path: 'version'
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Bump version in module.json
+        id: bump_version
+        run: |
+          cd ${{ env.module_path }}
+
+          # Get current version
+          current_version="${{ steps.version.outputs.prop }}"
+          echo "Current version: $current_version"
+
+          # Parse version components
+          IFS='.' read -r major minor patch <<< "$current_version"
+
+          # Bump version based on input
+          case "${{ github.event.inputs.version_bump }}" in
+              "major")
+                  major=$((major + 1))
+                  minor=0
+                  patch=0
+                  ;;
+              "minor")
+                  minor=$((minor + 1))
+                  patch=0
+                  ;;
+              "patch")
+                  patch=$((patch + 1))
+                  ;;
+          esac
+
+          new_version="${major}.${minor}.${patch}"
+          echo "New version: $new_version"
+
+          # Update module.json
+          npm pkg set version="$new_version"
+
+          # Also update module.json manually to ensure it's updated
+          sed -i "s/\"version\": \"$current_version\"/\"version\": \"$new_version\"/" module.json
+
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Set versions variables
+        id: versions
+        run: |
+          previous="${{ steps.previoustag.outputs.tag || 'og-custom-paused-icon-v0.0.0' }}"
+          current="${{ steps.bump_version.outputs.new_version }}"
+
+          # Remove prefix from previous version for comparison
+          previous_clean=$(echo "$previous" | sed 's/og-custom-paused-icon-v//')
+
+          echo "previous=$previous_clean" >> $GITHUB_OUTPUT
+          echo "current=$current" >> $GITHUB_OUTPUT
+          echo "should_release=true" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump
+        run: |
+          cd ${{ env.module_path }}
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add module.json package.json
+          git commit -m "Bump og-custom-paused-icon version to ${{ steps.bump_version.outputs.new_version }}" || exit 0
+          git push
+
+      - name: Output values
+        run: |
+          echo "Previous: ${{ steps.versions.outputs.previous }}"
+          echo "Current: ${{ steps.versions.outputs.current }}"
+          echo "Should release: ${{ steps.versions.outputs.should_release }}"
+
+  build:
+    needs: set_version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Install dependencies
+        run: |
+          cd ${{ env.module_path }}
+          npm ci
+
+      - name: Build the module
+        run: |
+          cd ${{ env.module_path }}
+          npm run build
+
+      - name: Upload dist directory as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: og-custom-paused-icon-dist
+          path: ${{ env.module_path }}/dist
+
+  release_to_github:
+    needs: [build, set_version]
+    runs-on: ubuntu-latest
+    if: ${{ needs.set_version.outputs.should_release == 'true' }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: og-custom-paused-icon-dist
+          path: ./dist
+
+      - name: Create Module Archive from the dist directory
+        run: |
+          cd dist
+          zip -r ../og-custom-paused-icon-v${{ needs.set_version.outputs.current }}.zip .
+
+      - name: Create the GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: og-custom-paused-icon-v${{ needs.set_version.outputs.current }}
+          name: og-custom-paused-icon v${{ needs.set_version.outputs.current }}
+          body: |
+            ## og-custom-paused-icon v${{ needs.set_version.outputs.current }}
+
+            ### Installation for Foundry VTT v13
+
+            **Manifest URL:** 
+            ```
+            https://github.com/${{ github.repository }}/releases/download/og-custom-paused-icon-v${{ needs.set_version.outputs.current }}/module.json
+            ```
+
+            **Direct Download:**
+            - [og-custom-paused-icon-v${{ needs.set_version.outputs.current }}.zip](https://github.com/${{ github.repository }}/releases/download/og-custom-paused-icon-v${{ needs.set_version.outputs.current }}/og-custom-paused-icon-v${{ needs.set_version.outputs.current }}.zip)
+
+            ### Changes
+            - Version bump to ${{ needs.set_version.outputs.current }}
+          files: |
+            og-custom-paused-icon-v${{ needs.set_version.outputs.current }}.zip
+            dist/module.json
