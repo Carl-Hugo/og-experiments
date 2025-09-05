@@ -1,8 +1,11 @@
-#pause > img {
+#pause img {
     animation: rotate 10s linear infinite;
+    width: 128px;
+    height: 128px;
+    position: initial;
 }
 
-#pause > figcaption {
+#pause figcaption {
     color: #e8b34c !important;
     font-family: 'Exocet' !important;
     font-weight: normal !important;

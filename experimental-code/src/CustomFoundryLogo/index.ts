@@ -18,7 +18,7 @@ export class CustomFoundryLogo extends OgBaseModule {
     }
 
     updateIcon(el: any) {
-        const pauseIcon = el.querySelector('.paused img');
+        const pauseIcon = el.querySelector('#paused img');
         if (pauseIcon) {
             //@ts-ignore
             pauseIcon.src = 'modules/og-experiments/src/CustomFoundryLogo/custom-foundry-logo-128x128.png';

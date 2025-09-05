@@ -12,7 +12,7 @@ export class CustomPausedIcon extends og.BaseModule {
     }
 
     updateIcon(el: any) {
-        const pauseIcon = el.querySelector('.paused img');
+        const pauseIcon = el.querySelector('#paused img');
         if (pauseIcon) {
             //@ts-ignore
             pauseIcon.src = `modules/${this.id}/og-paused-icon-128x128.webp`;
